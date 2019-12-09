@@ -1,0 +1,402 @@
+Java Programming
+
+4) 제어 흐름 이해하기
+: 조건문, 반복문
+
+4-1) 조건문
+: 주어진 조건에 따라 다른 문장을 선택할 수 있도록 프로그래밍하는 것
+
+예)
+만약(나이가 8살 이상이라면) {
+	학교에 다닙니다.
+  } 그렇지 않다면 {
+	학교에 다니지 않습니다.
+  }
+  
+= if문과 if-else문
+
+1) if문 
+-------------------------------------------------------------------------------
+if(조건식) {
+   수행문;	//조건식이 참일 경우에 이 문장을 수행
+   }
+-------------------------------------------------------------------------------
+: 주어진 조건식이 '참'일 경우 중괄호 안에 있는 문장을 수행한다.
+: 조건식에는 결과가 참, 거짓으로 판별될 수 있는 식이나 참, 거짓의 값을 가진 변수, 상수를 사용한다.
+
+예)
+int age = 10;
+if (age >= 8) {
+  System.out.println("학교에 다닙니다.");
+  }
+  
+  
+2) if-else문
+-------------------------------------------------------------------------------
+if(조건식) {
+   수행문1; //조건식이 참일 경우에 이 문장을 수행
+   }
+else {
+   수행문2; //조건식이 거짓일 경우에 이 문장을 수행
+   }
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+package chap4;
+
+public class IfExample1 {
+	public static void main(String[] args) {
+		int age = 7;
+		if(age >= 8) {
+			System.out.println("학교에 다닙니다.");
+		} else {
+			System.out.println("학교에 다니지 않습니다.");
+		}
+	}
+}
+-------------------------------------------------------------------------------
+학교에 다니지 않습니다.
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+package chap4;
+
+public class IfExample1_1 {
+	public static void main(String[] args) {
+		char gender = 'F';
+		if(gender == 'F') {
+			System.out.println("여성입니다.");
+		} else {
+			System.out.println("남성입니다.");
+		}
+	}
+}
+-------------------------------------------------------------------------------
+여성입니다.
+-------------------------------------------------------------------------------
+=> 중괄호를 사용하지 않아도 오류가 발생하지는 않지만 가독성을 위해서 사용하는게 좋다!
+
+
+3) if-else if-else문
+: 하나의 상황에 조건이 여러 개인 경우
+
+-------------------------------------------------------------------------------
+if(조건식1) {
+   수행문1; // 조건식1이 참일 경우에 수행함
+} else if(조건식2) {
+   수행문2; // 조건식2가 참일 경우에 수행함
+} else if(조건식3) {
+   수행문3; // 조건식3이 참일 경우에 수행함
+} else {
+   수행문4; // 위의 조건이 모두 해당하지 않는 경우에 수행함
+}
+수행문5; // if-else if-else문이 끝난 후 수행함
+-------------------------------------------------------------------------------
+
+if-else if-else문으로 입장료 계산하기
+-------------------------------------------------------------------------------
+package chap4;
+
+public class IfExample2 {
+	public static void main(String[] args) {
+		int age = 9;
+		int charge;
+		
+		if(age < 8) {
+			charge = 1000;
+			System.out.println("취학 전 아동입니다.");
+		} else if(age < 14) {
+			charge = 2000;
+			System.out.println("초등학생입니다.");
+		} else if(age < 20) {
+			charge = 2500;
+			System.out.println("중, 고등학생입니다.");
+		} else if(age <60) {
+			charge = 3000;
+			System.out.println("성인입니다.");
+		} else {
+			charge = 0;
+			System.out.println("경로우대입니다.");
+		}
+		System.out.println("입장료는 "+charge+"원입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+초등학생입니다.
+입장료는 2000원입니다.
+-------------------------------------------------------------------------------
+=> 여기서 조건식2가 "8 <= age < 14"가 아닌 이유는 1번 조건식이 만족하지 않았음을 알기 때문이다.
+
+
+** if-else if문과 if-if문의 차이
+if-else문은 하나의 조건을 만족하면 나머지 조건을 비교하지 않고 다음 수행문으로 넘어가지만,
+: 하나의 상황에 여러 조건을 비교하는 경우!!!
+if문으로만 이루어진 경우는 조건마다 각각 비교하여 넘어갑니다.
+: 개별 조건을 비교해야 하는 상황
+
+-------------------------------------------------------------------------------
+package chap4;
+
+public class IfExample2_1 {
+	public static void main(String[] args) {
+		int age = 9;
+		int charge;
+		
+		if(age < 8) {
+			charge = 1000;
+			System.out.println("취학 전 아동입니다.");
+		} if(age < 14) {
+			charge = 2000;
+			System.out.println("초등학생입니다.");
+		} if(age < 20) {
+			charge = 2500;
+			System.out.println("중, 고등학생입니다.");
+		} if(age <60) {
+			charge = 3000;
+			System.out.println("성인입니다.");
+		} else {
+			charge = 0;
+			System.out.println("경로우대입니다.");
+		}
+		System.out.println("입장료는 "+charge+"원입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+초등학생입니다.
+중, 고등학생입니다.
+성인입니다.
+입장료는 3000원입니다.
+-------------------------------------------------------------------------------
+=> 이런 식으로 모든 결과값이 한꺼번에 나오게 된다.(즉, 우리가 원하는 결과가 아니다.)
+
+-------------------------------------------------------------------------------
+성적에 따라 학점 부여하는 법 (혼자 코딩하는 연습)
+-------------------------------------------------------------------------------
+package chap4;
+
+public class CodingAlone {
+	public static void main(String[] args) {
+		int score = 100;
+		char grade;
+		
+		if(score > 90) {
+			grade = 'A';
+		} else if(score > 80) {
+			grade = 'B';
+		} else if(score > 70) {
+			grade = 'C';
+		} else if(score > 60) {
+			grade = 'D';
+		} else {
+			grade = 'F';
+		}
+			System.out.println(score+"점 입니다.");
+			System.out.println(grade+"학점 입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+
+
+** 조건문과 조건 연산자
+
+if(a > b)		max = (a > b) ? a : b
+  max = a;		
+else			
+  max = b;		
+
+if-else문		조건 연산자
+=> 간단한 조건문이고 선택이 두 가지만 있는 경우에는 종종 조건 연산자도 사용한다.
+-------------------------------------------------------------------------------
+if(score >= 90) {
+  grade = 'A';
+} else {			=>	grade = (score >= 90) ? 'A' : 'B';
+  grade = 'B';
+}
+-------------------------------------------------------------------------------
+
+
+4) switch-case문
+: if문을 사용하면 번거로운 경우가 있다.(조건이 더 많아지면 중괄호도 많아지게 된다.)
+-------------------------------------------------------------------------------
+if문과 switch-case문 차이
+-------------------------------------------------------------------------------
+if(rank ==1) {					switch(rank) {
+  medalColor = 'G';				  case 1 : medalColor = 'G';
+} else if(rank == 2) {						break;
+  medalColor = 'S';				  case 2 : medalColor = 'S';
+} else if(rank == 3) {						break;
+  medalColor = 'B' 				  case 3 : medalColor = 'B';
+} else {									break;
+  medalColor = 'A'				  default : medalColor = 'A';
+}								}
+-------------------------------------------------------------------------------
+=> switch-case문으로 구성하는 것이 코드도 깔끔하고 가독성도 좋다.
+=> case : break;까지 있어야 조건에 해당하는 문장이 된다.
+		  이후에 값이 없다면 default값이 수행된다.
+
+-------------------------------------------------------------------------------
+if(조건식1) {							switch(조건) {
+   수행문1;								case 값 1 : 수행문1;
+} else if(조건식2) {									break;
+   수행문2;								case 값 2 : 수행문2;
+} else if(조건식3) {									break;
+   수행문3;								case 값 3 : 수행문3;
+} else {											break;
+   수행문4;								default : 수행문4;
+}									 }
+-------------------------------------------------------------------------------
+=> switch문의 경우 어떤 case도 만족하지 않으면 default값이 떨어진다.
+
+-------------------------------------------------------------------------------
+package chap4;
+
+public class SwitchCase {
+	public static void main(String[] args) {
+		int ranking = 1;
+		char medalColor;
+		
+		switch(ranking) {
+		case 1 : medalColor = 'G';
+				 break;
+		case 2 : medalColor = 'S';
+				 break;
+		case 3 : medalColor = 'B';
+				 break;
+		default:
+				medalColor = 'A';
+		}
+		System.out.println(ranking+ "등 메달의 색깔은" + medalColor + "입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+1등 메달의 색깔은 G입니다.
+-------------------------------------------------------------------------------
+
+** case문 동시에 사용하기
+: case문은 여러 경우를 동시에 처리할 때도 자주 사용한다.
+
+반복되는 경우에
+case 1 : case 3 : case 5 : day = 31;
+		break;
+case 4 : case 6 : case 9 : day = 30;
+		break;
+case 2 : day = 28;
+		break;
+=> 이런 식으로 동시에 사용할 수 있다.
+
+** switch-case문에서 break문의 역할
+: break를 사용하지 않은 경우?
+-------------------------------------------------------------------------------
+package chap4;
+
+public class SwitchCase1_1 {
+	public static void main(String[] args) {
+		int ranking = 1;
+		char medalColor;
+		
+		switch(ranking) {
+		case 1 : medalColor = 'G';
+		case 2 : medalColor = 'S';
+		case 3 : medalColor = 'B';
+		default : medalColor = 'A';
+		}
+		System.out.println(ranking + "등 메달의 색깔은 " + medalColor + "입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+1등 메달의 색깔은 A입니다.
+-------------------------------------------------------------------------------
+=> switch-case문을 빠져나올 수 없기 때문에 break;문을 꼭! 작성해야 한다!!!
+
+
+** case문에 문자열 사용하기(자바 7부터 사용가능한 기술)
+-------------------------------------------------------------------------------
+package chap4;
+
+public class SwitchCase2 {
+	public static void main(String[] args) {
+		String medal = "Gold";
+		
+		switch(medal) {
+		case "Gold" :
+			System.out.println("금메달입니다.");
+			break;
+		case "Silver" :
+			System.out.println("은메달입니다.");
+			break;
+		case "Bronze" :
+			System.out.println("동메달입니다.");
+			break;
+		default :
+			System.out.println("메달이 없습니다.");
+			break;
+		}
+	}
+}
+-------------------------------------------------------------------------------
+=> 과거에는 (medal.equals("Gold")) 이런 식으로 적어줬어야 했다.
+
+-------------------------------------------------------------------------------
+나 혼자 switch-case문 연습하기!!!
+-------------------------------------------------------------------------------
+package chap4;
+
+public class CodingAlone2 {
+	public static void main(String[] args) {
+		int floor = 5;
+		
+		switch(floor) {
+		case 1 : floor = 1;
+			System.out.println(floor+"층은 약국입니다.");
+			break;
+		case 2 : floor = 2;
+			System.out.println(floor+"층은 정형외과입니다.");
+			break;
+		case 3 : floor = 3;
+			System.out.println(floor+"층은 피부과입니다.");
+			break;
+		case 4 : floor = 4;
+			System.out.println(floor+"층은 치과입니다.");
+			break;
+		default : floor = 5;
+			System.out.println(floor+"층은 헬스 클럽입니다.");
+		}
+	}
+}
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+package chap4;
+
+public class CodingAlone2 {
+	public static void main(String[] args) {
+		int floor = 5;
+		String building;
+		
+		switch(floor) {
+		case 1 : building = "층은 약국";
+			break;
+		case 2 : building = "층은 정형외과";
+			break;
+		case 3 : building = "층은 피부과";
+			break;
+		case 4 : building = "층은 치과";
+			break;
+		case 5 : building = "층은 헬스 클럽";
+			break;
+		default : building ="층은 빈 층";
+			break;
+		}
+		System.out.println(floor+building+"입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+=> 좀 더 깔끔하게 고친 코딩!
+
+
+
+
+
+
+
+
