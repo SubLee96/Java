@@ -1,0 +1,357 @@
+Java Programming
+
+5) 클래스와 객체1
+
+5-4) 클래스와 인스턴스
+
+main() 함수
+: 우리가 만든 클래스 내부에 main() 함수를 만드는법
+: 외부에 테스트용 클래스를 만들어 사용하는 것
+
+= new 예약어
+: [클래스형 / 변수 이름 = new 생성자;]
+이런 식으로 만들어진다.
+
+= 객체, 클래스, 인스턴스
+객체 : 의사나 행위가 미치는 대상
+클래스 : 객체를 코드로 구현한 것
+인스턴스 : 클래스가 메모리 공간에 생성된 상태
+
+=> 한 개의 클래스로부터 여러 개의 인스턴스를 생성할 수 있다.
+
+
+- 참조 변수 사용하기
+참조 변수.맴버 변수				=		studentLee.studentName = "이윤섭";					//맴버 변수 사용
+참조 변수.메서드				=		System.out.println(studentLee.getStudentName());	//메서드 사용
+
+
+= 인스턴스와 힙 메모리
+: 변수를 저장할 공간이 필요하게 된다. 이때 사용하는 메모리가 '힙 메모리(heap memory)'이다.
+-> java에서는 가비지 컬렉터가 있기에 자동으로 메모리를 해제해준다.
+
+Student student = new Student();
+
+****
+지역변수는 스택 메모리에서 생성되고, 인스턴스는 힙 메모리에 생성된다.
+: 힙 메모리= 동적 메모리 공간;
+
+두 개 생성 시,
+Student student1 = new Student();
+Student student2 = new Student();
+
+-------------------------------------------------------------------------------
+package chap5;
+
+public class StudentTest2 {
+
+	public static void main(String[] args) {
+		Student student1 = new Student();
+		student1.studentName = "이윤섭";
+		
+		Student student2 = new Student();
+		student2.studentName = "안녕요";
+		
+		System.out.println(student1);
+		System.out.println(student2);	//참조 변수 값 입력
+	}
+
+}
+-------------------------------------------------------------------------------
+chap5.Student@73f792cf
+chap5.Student@2ed94a8b
+-------------------------------------------------------------------------------
+=> 주소값을 해시코드(hash code) 값이라 칭한다. '패키지.클래스 이름@주소값'
+
+
+-------------------------------------------------------------------------------
+용어 정리
+-------------------------------------------------------------------------------
+객체  	// 객체 지향 프로그램의 대상, 생성된 인스턴스
+클래스 	// 객체를 프로그래밍하기 위해 코드로 만든 상태		추상적인 의미의 "학생"
+인스턴스 	// 클래스가 메모리에 생성된 상태				개별적인 존재 느낌 "학생"
+맴버 변수	// 클래스의 속성, 특성
+메서드	// 맴버 변수를 이용하여 클래스의 기능 구현
+참조 변수	// 메모리에 생성된 인스턴스를 가리키는 변수		chap5.Student@73f792cf
+참조 값 	// 생성된 인스턴스의 메모리 주소 값				73f792cf
+-------------------------------------------------------------------------------
+
+
+혼자 코딩하기!! 연습문제
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Person {
+		int age;
+		String name;
+		boolean isMarried;
+		int numberOfChildren;
+}		
+-------------------------------------------------------------------------------
+package chap5;
+
+public class PersonTest {
+
+	public static void main(String[] args) {
+		Person person = new Person();
+		person.age = 40;
+		person.name = "James";
+		person.isMarried = true;
+		person.numberOfChildren = 3;
+		
+		System.out.println("나이 : "+ person.age);
+		System.out.println("이름 : "+ person.name);
+		System.out.println("결혼 여부 : "+ person.isMarried);
+		System.out.println("자녀 수 : "+ person.numberOfChildren);
+
+	}
+
+}
+-------------------------------------------------------------------------------
+나이 : 40
+이름 : James
+결혼 여부 : true
+자녀 수 : 3
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Order {
+		long orderNum;
+		String customerId;
+		String orderDate;
+		String customerName;
+		String productNum;
+		String shippingAddress;
+}
+-------------------------------------------------------------------------------
+package chap5;
+
+public class OrderTest {
+
+	public static void main(String[] args) {
+		Order order = new Order();
+		
+		order.orderNum = 201803120001L;
+		order.customerId = "abc123";
+		order.orderDate = "2018년 3월 12일";
+		order.customerName = "홍길순";
+		order.productNum = "PD0345-12";
+		order.shippingAddress = "인천시 남동구 논현동 은봉로 288";
+		
+		System.out.println("주문 번호 : "+ order.orderNum);
+		System.out.println("주문자 아이디 : "+ order.customerId);
+		System.out.println("주문 날짜 : "+ order.orderDate);
+		System.out.println("주문자 이름 : "+ order.customerName);
+		System.out.println("주문 상품 번호 : "+ order.productNum);
+		System.out.println("배송 주소 : "+ order.shippingAddress);
+		
+	}
+
+}
+-------------------------------------------------------------------------------
+주문 번호 : 201803120001
+주문자 아이디 : abc123
+주문 날짜 : 2018년 3월 12일
+주문자 이름 : 홍길순
+주문 상품 번호 : PD0345-12
+배송 주소 : 인천시 남동구 논현동 은봉로 288
+-------------------------------------------------------------------------------
+
+
+5-5) 생성자(constructor)
+: 클래스를 처음 만들 때, 맴버 변수나 상수를 초시화하는 일을 한다.
+- 반환값이 없고, 클래스 이름과 동일하다.
+
+예) Person person = new Person(); 여기서 Person()이 생성자에 속한다.
+
+= 디폴트 생성자
+java 컴파일러가 자동으로 생성해주는 생성자
+- 매개변수가 따로 필요하지 않고, 구현 코드도 없다. 
+
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Peron {
+	String name;
+	float height;
+	float weight;
+	
+	public Person()	{ }    => java 컴파일러가 자동으로 생성해준 생성자
+}
+-------------------------------------------------------------------------------
+
+
+= 생성자 만들기
+: 인스턴스가 생성됨과 동시에 맴버 변수의 값을 지정하고 인스턴스를 초기화하기 위해 생성자를 직접 구현함.
+
+-------------------------------------------------------------------------------
+public Person(String pname) {
+	name = pname;
+}
+-------------------------------------------------------------------------------
+package constructor;
+
+public class PersonTest {
+	public static void main (String[] args) {
+		Person personLee = new Person();  			=> 오류 발생
+}
+-------------------------------------------------------------------------------
+: 오류 발생 원인 = 디폴트 생성자가 없기 때문이다.
+(*** 프로그래머가 생성자를 직접 만들어준 경우에는 디폴트 생성자가 생기지 않는다.)
+
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Peron {
+	String name;
+	float height;
+	float weight;
+	
+	public Person()	{ } 		=> 디폴트 생성자 직접 추가 
+	
+	public Person(String pname) {
+		name = pname;
+	}
+}
+-------------------------------------------------------------------------------
+
+
+= 생성자 오버로드(constructor overload)
+: 클래스에 생성자가 두 개 이상 제공되는 경우
+
+** 오버로드 : 객체 지향 프로그램에서 메서드 이름이 같고 매개변수가 다를 경우
+
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Peron {
+	String name;
+	float height;
+	float weight;
+	
+	public Person()	{ } 		=> 디폴트 생성자
+	
+	public Person(String pname) {   =>  이름을 매개변수로 입력받는 생성자
+		name = pname;
+	}
+	public Person(String pname, float pheight, float pweight) {
+		name = pname;
+		height = pheight;				=> 이름, 키, 몸무게를 매개변수로 입력받는 생성자
+		weight = pweight;
+}
+-------------------------------------------------------------------------------
+package chap5;
+
+public class PertonTest {
+
+	 public static void main(String[] args) {
+		  Person personKim = new Person();
+		  personKim.name = "김유신";				=>  디폴트 생성자로 클래스를 생성한 후
+		  personKim.weight = 85.5F;					인스턴스 변수 값을 따로 초기화
+		  personKim.height = 180.0F;
+		
+		  Person personLee = new Person("이순신", 175, 75);	=>  인스턴스 변수 초기화와 동시에 클래스 생성
+	 }
+}
+-------------------------------------------------------------------------------
+
+
+5-6) 참조 자료형
+: 프로그래머의 편리에 따라 만들면 된다.
+: String 은 JDK에서 제공해주는 자료형이다.
+
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Student1 {
+	int studentID;
+	String studentName;
+	int koreaScore;				}
+	int mathScore;				}
+	String koreaSubject;		}	=> 이런 식으로 여러 개 적어줘야 할 사항을 
+	String mathSubject;			}
+}
+-------------------------------------------------------------------------------
+
+위의 식을
+
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Subject {
+	String SubjectName;			}		=> 이렇게 나눠주면
+	int scorePoint;				}
+}
+-------------------------------------------------------------------------------
+package chap5;
+
+public class Student1 {
+	int studentID;
+	String studentName;
+	Subject korean;				}		=> 편리해진다.
+	Subject math;				}
+}
+-------------------------------------------------------------------------------
+=> 아래와 같이 분리해서 작성해주는 것이 좋다!!!
+
+
+5-7) 정보 은닉
+: public예약어에 대한 질문!
+
+= 접근 제어자(access modifier)
+: 클래스 내부의 변수나 메서드, 생성자에 대한 전급 권한
+-------------------------------------------------------------------------------
+접근 제어자			설명
+public				외부 클래스 어디에서나 접근할 수 있다.
+protected			같은 패키지 내부와 상속 관계의 클래스에서만 접근할 수 있고
+					그 외 클래스에서는 접근할 수 없다.
+아무것도 없는 경우		default이며 같은 패키지 내부에서만 접근할 수 있다.
+private				같은 클래스 내부에서만 접근할 수 있다.
+-------------------------------------------------------------------------------
+
+- private로 선언한 경우, 외부에서 받으려면
+: get(), set() 메서드를 사용할 수 있다. => getter, setter!!!
+
+
+= 정보 은닉(information hiding)
+: 접근 제어자를 사용하여 정보 은닉을 구현
+-------------------------------------------------------------------------------
+package chap5;
+
+public class MyDate {
+	public int day;
+	public int month;
+	public int year;
+}
+-------------------------------------------------------------------------------
+package chap5;
+
+public class MyDateTest {
+
+	public static void main(String[] args) {
+		MyDate date = new MyDate();
+		date.month = 12;
+		date.day = 11;
+		date.year = 2019;
+	}
+
+}
+-------------------------------------------------------------------------------
+package chap5;
+
+public class MyDate {
+	private int day;
+	private int month;
+	private int year;
+	
+	public void setDay(int day) {
+		if(month == 2) {
+			if(day < 1 || day > 28) {
+			System.out.println("오류입니다.");
+		} else {
+			this.day = day;
+		}
+	}
+  }
+}
+-------------------------------------------------------------------------------
+=> public 메서드를 따로 제공한다.
