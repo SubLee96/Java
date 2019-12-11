@@ -1,0 +1,374 @@
+Java Programming
+
+6) 클래스와 객체2(1)
+
+6-1) this 예약어
+
+1) 자신의 메모리를 가리키는 this
+: this : 생성된 인스턴스 스스로를 가리키는 예약어
+
+-------------------------------------------------------------------------------
+package thisex;
+
+class BirthDay{
+
+	int day;
+	int month;
+	int year;
+	
+	public void setYear(int year) {
+		this.year = year;			//bDay.year = year;와 동일함
+	}
+	
+	public void printThis() {		//this 출력 메서드
+		System.out.println(this);   //System.out.println(bDay);와 동일함
+	}
+}
+
+public class ThisExample {
+
+	public static void main(String[] args) {
+		
+		BirthDay bDay = new BirthDay();	
+		bDay.setYear(2000);				//태어난 연도를 2000으로 지정
+		System.out.println(bDay);		//참조 변수 출력
+		bDay.printThis();				//this 출력 메서드 호출
+	}
+}
+-------------------------------------------------------------------------------
+thisex.BirthDay@73f792cf
+thisex.BirthDay@73f792cf
+-------------------------------------------------------------------------------
+=> this 값과 bDay값이 동일함을 알 수 있다.
+: 클래스 코드에서 사용하는 this는 생성된 인스턴스 자신을 가리키는 역할을 수행한다.
+
+
+2) 생성자에서 다른 생성자를 호출하는 this
+: 클래스에 생성자가 여러 개 있는 경우, 어떤 생성자에서 다른 생성자를 호출하는 경우가 종종 있다.
+=> this를 활용하여 클래스의 생성자에서 다른 생성자를 호출할 수 있다.
+
+-------------------------------------------------------------------------------
+package thisex;
+
+	class Person {
+		String name;
+		int age;
+		
+		Person() {
+			this("이름없음", 1); 	//this를 사용해 Person(String, int) 생성자를 호출
+		}
+		
+		Person(String name, int age) {
+			this.name = name;
+			this.age = age;
+		}
+	}
+	
+	public class CallAnotherConst {
+		public static void main(String[] args) {
+			Person noName = new Person();
+			System.out.println(noName.name);
+			System.out.println(noName.age);
+	}
+}
+-------------------------------------------------------------------------------
+이름없음
+1
+-------------------------------------------------------------------------------
+=> 이미 작성되어 있기 때문에 58행처럼 this를 활용하여 다른 생성자를 호출할 수 있다.
+
+
+*** 주의사항
+
+: this를 사용하여 생성자를 호출하는 코드 이전에 다른 코드를 넣을 수는 없다.
+-------------------------------------------------------------------------------
+		Person() {
+			this.name = "noName";
+			this("이름없음", 1); 	//this를 사용해 Person(String, int) 생성자를 호출
+		}
+-------------------------------------------------------------------------------
+=> 디폴트 생성자에서 생성이 완료되는 것이 아니라, this를 사용해 다른 생성자를 호출하므로 이때는 this를 
+   활용한 문자이 가장 먼저 와야 한다.
+
+
+3) 자신의 주소를 반환하는 this
+: this를 사용하여 생성된 클래스 자신의 주소 값을 반환할 수 있다.
+
+-------------------------------------------------------------------------------
+package thisex;
+
+class Man{
+	String name;
+	int age;
+	
+	Man(){
+		this("이름없음", 1);  // Person(String, int) 생성자 호출
+	}
+	
+	Man(String name, int age){
+		this.name = name;
+		this.age = age;
+	}
+	
+	Man returnItSelf() {
+		return this;
+	}
+}
+
+public class CallAnotherCont {
+
+	public static void main(String[] args) {
+
+		Man noName = new Man();
+		System.out.println(noName.name);
+		System.out.println(noName.age);
+		
+		Man p = noName.returnItSelf();
+		System.out.println(p);
+		System.out.println(noName);
+	}
+}
+-------------------------------------------------------------------------------
+이름없음
+1
+thisex.Man@73f792cf
+thisex.Man@73f792cf
+-------------------------------------------------------------------------------
+=> 흔한 일은 아니지만, 자신의 주소 값을 반환할 수 있다!!!
+
+
+6-2) 객체 간 협력
+객체 지향 프로그램은 객체를 정의하고 객체 간 협력으로 만든다!!!
+: 실제로 어떤 식으로 협력이 이루어지는지 볼 수 있다.
+
+= 학생이 버스나 지하철을 타고 학교에 가는 것을 객체 지향 프로그래밍함!
+
+
+1. 학생 클래스 구현하기
+: 학생 클래스는 '이름', '학년', '가진 돈' 등의 맴버 변수(속성)를 갖는다.
+			 '버스를 탄다', '지하철을 탄다', '학생의 현재 정보를 보여 준다.' 등의 메서드(맴버 함수)를 갖는다.
+
+학생 정보 초기화
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class Student {
+	public String studentName;	//학생 이름
+	public int grade;			//학년
+	public int money;			//가진 돈
+	
+	//학생 이름과 가진 돈을 매개변수로 받는 생성자
+	public Student(String studentName, int money) {
+		this.studentName = studentName;
+		this.money = money;
+	}	
+	
+	//학생이 버스를 타면 1000원을 지불하는  기능을 구현하는 메서드
+	public void takeBus(Bus bus) {	
+		bus.take(1000);				
+		this.money -= 1000;
+	}	
+	
+	//학생이 지하철을 타면 1500원을 지불하는기능을 구현하는 메서드
+	public void takeSubway(Subway subway) {	
+		subway.take(1500);			
+		this.money -= 1500;
+	}	
+
+	//학생이 현재 정보를 출력하는 메서드
+	public void showInfo() {	
+		System.out.println(studentName + "님의 남은 돈은 "+ money +"원입니다.");
+	}	
+}
+-------------------------------------------------------------------------------
+버스 정보 초기화
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class Bus {
+	int busNumber;			//버스 번호
+	int passengerCount;		//승객 수
+	int money;				//버스 수입
+	
+	//버스 번호를 매개변수로 받는 생성자
+	public Bus(int busNumber) {
+		this.busNumber = busNumber;
+	}
+	
+	//승객이 버스에 탄 경우를 구현한 메서드
+	public void take(int money) {
+		this.money += money;	//버스 수입 증가
+		passengerCount++;		//승객 수 증가
+	}
+	
+	//버스 정보를 출력하는 메서드
+	public void showInfo() {
+		System.out.println("버스 "+ busNumber +"번의 승객은 "+ passengerCount+"명이고, 수입은 "+money +"원입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+지하철 정보 초기화
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class Subway {
+	String lineNumber;		//지하철 노선
+	int passengerCount;		//승객 수
+	int money;				//수입액
+	
+	//지하철 노선 번소를 매개변수로 받는 생성자
+	public Subway(String lineNumber) {
+		this.lineNumber = lineNumber;
+	}
+	
+	//승객이 지하철에 탄 경우를 구현한 메서드
+	public void take(int money) {
+		this.money += money;
+		passengerCount++;
+	}
+	
+	//지하철 정보 출력하는 메서드
+	public void showInfo()	{
+		System.out.println(lineNumber+ "의 승객은 "+ passengerCount +"명이고, 수입은 "+ money +"원입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+학생 두 명의 인스턴스 생성
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class TakeTrans {
+	public static void main(String[] args) {
+		//학생 두 명 생성
+		Student studentJames = new Student("James", 5000);
+		Student studentTomas = new Student("Tomas", 10000);
+	
+		Bus bus100 = new Bus(100);		//노선 번호가 100번인 버스 생성
+		studentJames.takeBus(bus100);	//James가 100번 버스 탑승
+		studentJames.showInfo();		//James 정보 출력
+		bus100.showInfo();				//버스 정보 출력
+		
+		Subway subwayGreen = new Subway("2호선");	//노선 번호가 2번인 지하철 생성
+		studentTomas.takeSubway(subwayGreen);	//Tomas가 2번 지하철 탑승
+		studentTomas.showInfo();				//Tomas 정보 출력
+		subwayGreen.showInfo();					//지하철 정보 출력
+	}
+}
+-------------------------------------------------------------------------------
+James님의 남은 돈은 4000원입니다.
+버스 100번의 승객은 1명이고, 수입은 1000원입니다.
+Tomas님의 남은 돈은 8500원입니다.
+2호선의 승객은 1명이고, 수입은 1500원입니다.
+-------------------------------------------------------------------------------
+
+=> 여기서 객체는 학생, 버스, 지하철이다.
+1) 각 객체에 필요한 맴버 변수를 선언하고, 생성자를 정의했다.
+2) 객체 사이의 협력을 구현했다.
+이는 객체 지향 프로그램을 가장 잘 반영한 프로그램이다.
+
+---------------------------------------------
+생성자란?										
+: 클래스를 처음 만들 때, 맴버 변수나 상수를 초기화하는 과정
+---------------------------------------------
+
+CodingAlone!!!
+Edward 학생이 늦잠을 자서 택시를 타고 학교에 가게 되었다.
+택시 요금은 10000원을 지불했다.
+
+-------------------------------------------------------------------------------
+takeTaxi 메서드 추가(택시를 타면 10000원을 지불하는 메서드 구현)
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class Student {
+	public String studentName;	//학생 이름
+	public int grade;			//학년
+	public int money;			//가진 돈
+	
+	//학생 이름과 가진 돈을 매개변수로 받는 생성자
+	public Student(String studentName, int money) {
+		this.studentName = studentName;
+		this.money = money;
+	}	
+	
+	//학생이 버스를 타면 1000원을 지불하는  기능을 구현하는 메서드
+	public void takeBus(Bus bus) {	
+		bus.take(1000);				
+		this.money -= 1000;
+	}	
+	
+	//학생이 지하철을 타면 1500원을 지불하는기능을 구현하는 메서드
+	public void takeSubway(Subway subway) {	
+		subway.take(1500);			
+		this.money -= 1500;
+	}	
+	
+	public void takeTaxi(Taxi taxi) {
+		taxi.take(10000);
+		this.money -= 10000;
+	}
+
+	//학생이 현재 정보를 출력하는 메서드
+	public void showInfo() {	
+		System.out.println(studentName + "님의 남은 돈은 "+ money +"원입니다.");
+	}	
+}
+-------------------------------------------------------------------------------
+택시 정보 초기화
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class Taxi {
+	String taxiName;
+	int passengerCount;
+	int money;
+	
+	public Taxi(String taxiName) {
+		this.taxiName = taxiName;
+	}
+	
+	public void take(int money) {
+		this.money += money;
+		passengerCount++;
+	}
+	
+	public void showInfo() {
+		System.out.println(taxiName+ "의 승객은 "+ passengerCount +"명이고, 수입은 "+ money +"원입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+Edward 학생 정보 초기화
+-------------------------------------------------------------------------------
+package cooperation;
+
+public class TakeTrans {
+	public static void main(String[] args) {
+		//학생 두 명 생성
+		Student studentJames = new Student("James", 5000);
+		Student studentTomas = new Student("Tomas", 10000);
+		Student studentEdward = new Student("Edward", 100000);
+	
+		Bus bus100 = new Bus(100);		//노선 번호가 100번인 버스 생성
+		studentJames.takeBus(bus100);	//James가 100번 버스 탑승
+		studentJames.showInfo();		//James 정보 출력
+		bus100.showInfo();				//버스 정보 출력
+		
+		Subway subwayGreen = new Subway("2호선");	//노선 번호가 2번인 지하철 생성
+		studentTomas.takeSubway(subwayGreen);	//Tomas가 2번 지하철 탑승
+		studentTomas.showInfo();				//Tomas 정보 출력
+		subwayGreen.showInfo();					//지하철 정보 출력
+		
+		Taxi taxiLoyal = new Taxi("모범");
+		studentEdward.takeTaxi(taxiLoyal);
+		studentEdward.showInfo();
+		taxiLoyal.showInfo();
+	}
+}
+-------------------------------------------------------------------------------
+James님의 남은 돈은 4000원입니다.
+버스 100번의 승객은 1명이고, 수입은 1000원입니다.
+Tomas님의 남은 돈은 8500원입니다.
+2호선의 승객은 1명이고, 수입은 1500원입니다.
+Edward님의 남은 돈은 90000원입니다.
+모범의 승객은 1명이고, 수입은 10000원입니다.
+-------------------------------------------------------------------------------
