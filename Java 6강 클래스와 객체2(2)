@@ -1,0 +1,452 @@
+Java Programming
+
+6) 클래스와 객체2(2)
+
+6-3) static 변수
+
+# 변수를 여러 클래스에서 공통으로 사용하려면?
+: 학생 클래스를 사용하면 여러 학생의 인스턴스를 만들 수 있다.
+
+Q 1) 고유한 학번(studentID)을 가지는데, 학생이 입학하면(클래스가 생성되면) 학번이 자동으로 생성되도록 만들고 싶다.
+Q 2) 어떻게 학생에게 부여하는지?
+A) 각 인스턴스마다 따로 생성되는 변수가 아닌, 클래스 전반에서 공통으로 사용할 수 있는 '기준 변수'가 있어야 한다.
+   또한, 학생이 한 명 생성될 때마다 기준 변수 값을 하나씩 증가시켜 각 학생 인스턴스의 학번 변수에 대입해주면 된다.
+=> 공통으로 사용하는 변수를 'static 변수'로 선언한다.
+
+# static 변수의 정의와 사용 방법
+: static 변수 = 정적 변수 = 클래스 변수(class variable) :
+= 클래스 내부에 선언한다.
+(다른 맴버 변수처럼 인스턴스가 생성될 때마다 새로 생성되는 변수가 아니다.)
+-> 프로그램이 실행되어 메모리에 올라갔을 때 딱 한 번 메모리에 공간이 할당된다.
+	그리고 그 값을 모든 인스턴스가 공유한다.
+-> static으로 선언한 변수는 인스턴스 생성과 상관없이 먼저 생성되고 그 값을 모든 인스턴스가 공유하게 된다.
+
+[static 예약어 / 자료형 / 변수 이름]
+
+-------------------------------------------------------------------------------
+package staticex;
+
+public class Student {
+	public static int serialNum = 1000;	//인스턴스와 상관없이 먼저 생성된다.
+	public int studentID;
+	public String studentName;
+	public int grade;
+	public String address;
+
+	
+	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		studentName = studentName;
+	}
+}
+-------------------------------------------------------------------------------
+package staticex;
+
+public class StudentTest1 {
+
+	public static void main(String[] args) {
+		Student studentLee = new Student();
+		studentLee.setStudentName("이윤섭");
+		System.out.println(studentLee.serialNum); //serialNum 변수의 초깃 값 출력
+		studentLee.serialNum++;		//static 변수 값 증가
+		
+		Student studentJ = new Student();
+		studentJ.setStudentName("James");
+		System.out.println(studentJ.serialNum);		//증가된 출력 값
+		System.out.println(studentLee.serialNum);
+	}
+
+}
+-------------------------------------------------------------------------------
+1000
+1001
+1001
+-------------------------------------------------------------------------------
+
+# 학번 생성하기
+: 학생이 한 명 생성될 때마다 학번을 자동으로 부여하는 프로그램 생성
+-------------------------------------------------------------------------------
+package staticex;
+
+public class Student1 {
+	public static int serialNum = 1000;
+	public int studentID;
+	public String studentName;
+	public int grade;
+	public String address;
+	
+	public Student1( ) {
+		serialNum++;			//학생이 생성될 때마다 증가
+		studentID = serialNum;	//증가된 값을 학번 인스턴스 변수에 부여
+	}
+
+	public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+}
+-------------------------------------------------------------------------------
+=> 학번은 학생의 고유 번호이기 때문에 
+: static 변수는 모든 인스턴스가 공유하는 변수이므로 이 변수를 바로 학번으로 사용하면 모든 학생이 동일한 학번 값을 가지게 되므로 안된다.
+
+> 학번은 학생의 고유번호이므로 학생의 맴버 변수로 선언해주고, 학생이 한 명 생성될 때마다 증가한 serialNum 값을
+  studentID에 대입해 주면 이 문제를 해결해줄 수 있다.
+
+-------------------------------------------------------------------------------
+package staticex;
+
+public class StudentTest2 {
+
+	public static void main(String[] args) {
+		Student1 studentLee = new Student1();
+		studentLee.setStudentName("이윤섭");
+		System.out.println(studentLee.serialNum);
+		System.out.println("이름 : "+ studentLee.studentName+ ", 학번 : "+ studentLee.serialNum);
+		
+		Student1 studentJ = new Student1();
+		studentJ.setStudentName("Lebron James");
+		System.out.println(studentJ.serialNum);
+		System.out.println("이름 : "+ studentJ.studentName+ ", 학번 : "+ studentJ.serialNum);
+		
+	}
+
+}
+-------------------------------------------------------------------------------
+=> 학생 인스턴스를 추가할 때마다 serialNum의 변수 값은 증가하게 된다.
+
+static을 통해 같은 클래스에서 생성된 인스턴스들이 같은 값을 공유할 수 있다!!!
+
+
+# 클래스 변수
+: static변수는 인스턴스를 생성할 때마다 생성되는 것이 아니라 클래스를 선언할 때, 특정 메모리에 저장되어
+  모든 인스턴스가 공유하는 변수이다.
+-------------------------------------------------------------------------------
+package staticex;
+
+public class StudentTest3 {
+	public static void main(String[] args) {
+		Student1 studentLee = new Student1();
+		studentLee.setStudentName("이윤섭");
+		System.out.println(Student1.serialNum);
+		System.out.println(studentLee.studentName+ " 학번 : "+ studentLee.studentID);
+		
+		Student1 studentJ = new Student1();
+		studentJ.setStudentName("Lebron James");
+		System.out.println(Student1.serialNum);
+		System.out.println(studentJ.studentName+ " 학번 : "+ studentJ.studentID);
+	}
+}
+-------------------------------------------------------------------------------
+1001
+이윤섭 학번 : 1001
+1002
+Lebron James 학번 : 1002
+-------------------------------------------------------------------------------
+=> 같이 인스턴스에 참조할 수 있으나, static 변수는 인스턴스가 생성되지 않아도 사용할 수 있기 때문에 
+   일반적으로 "클래스 이름과 함께 사용한다."
+
+# 클래스 메서드
+: static 메서드 = 클래스 메서드(class method)
+
+-------------------------------------------------------------------------------
+package staticex;
+
+public class Student2 {
+	private static int serialNum = 1000;
+	int studentID;
+	String studentName;
+	int grade;
+	String address;
+	
+	public Student2() {
+		serialNum++;
+		studentID = serialNum;
+	}
+
+	public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+
+	public static int getSerialNum() {
+		return serialNum;
+	}
+
+	public static void setSerialNum(int serialNum) {
+		Student2.serialNum = serialNum;
+	}
+}
+-------------------------------------------------------------------------------
+package staticex;
+
+public class StudentTest4 {
+
+	public static void main(String[] args) {
+		Student2 studentLee = new Student2();
+		studentLee.setStudentName("이윤섭");
+		System.out.println(Student2.getSerialNum());	//get() 메서드를 통해 serialNum을 바로 가져올 수 있다.
+		System.out.println(studentLee.studentName+ " 학번 : "+ studentLee.studentID);
+		
+		Student2 studentJ = new Student2();
+		studentJ.setStudentName("Lebron James");
+		System.out.println(Student2.getSerialNum());
+		System.out.println(studentJ.studentName+ " 학번 : "+ studentJ.studentID);
+	}
+
+}
+-------------------------------------------------------------------------------
+1001
+이윤섭 학번 : 1001
+1002
+Lebron James 학번 : 1002
+-------------------------------------------------------------------------------
+
+# 클래스 메서드와 인스턴스 변수
+: 클래스 메서드 내부에서 인스턴스 변수를 사용할 수 없다.
+-------------------------------------------------------------------------------
+public class Student2 {
+	private static int serialNum = 1000;
+	int studentID;
+	String studentName;
+	int grade;
+	String address;
+	...
+	public static int getSerialNum() {
+		int i = 10;						//지역변수
+		studentName = "이윤섭";			//인스턴스가 생성될 때 만들어지는 인스턴스 변수이기에 오류가 발생한다.
+		return serialNum;				//static 변수이기에 클래스 메서드 getSerialNum()안에서도 사용가능하다.
+-------------------------------------------------------------------------------
+: 지역변수 = 메서드가 호출될 때 메모리에 생성되어 메서드가 끝나면 사라지는 변수이다.
+
+-------------------------------------------------------------------------------
+package staticex;
+
+public class StudentTest5 {
+
+	public static void main(String[] args) {
+		System.out.println(Student2.getSerialNum());	//인스턴스 없이 호출가능
+	}
+
+}
+-------------------------------------------------------------------------------
+1000
+-------------------------------------------------------------------------------
+=> 클래스 메서드 내부에는 지역 변수와 클래스 변수는 사용할 수 있으나, 인스턴스 변수는 사용할 수 없다.
+
+
+CodingAlone!!!
+조건 1. 학생마다 다른 학생 카드가 발급된다. 학생 카드 번호는 학번에 100을 더한 값이다.
+조건 2. Student3 클래스를 만들어 학생 카드 번호 맴버 변수를 추가하고, 학생이 생성될 때마다 학생 카드 번호를 부여한다.
+조건 3. StudentTest6 클래스를 만들어 학생 두 명을 생성한다.
+결과물. 카드 번호를 출력하자!
+
+-------------------------------------------------------------------------------
+package staticex;
+
+public class Student3 {
+	private static int serialNum = 1000;
+		int studentID;
+		String studentName;
+		int grade;
+		String address;
+		int cardNumber;
+		
+		public Student3() {
+			serialNum++;
+			studentID = serialNum;
+			cardNumber = serialNum + 100;
+		}
+
+		public String getStudentName() {
+			return studentName;
+		}
+
+		public void setStudentName(String studentName) {
+			this.studentName = studentName;
+		}
+
+		public static int getSerialNum() {
+			return serialNum;
+		}
+
+		public static void setSerialNum(int serialNum) {
+			Student3.serialNum = serialNum;
+		}
+	}
+-------------------------------------------------------------------------------
+package staticex;
+
+public class StudentTest6 {
+
+	public static void main(String[] args) {
+		Student3 studentLee = new Student3();
+		studentLee.setStudentName("이윤섭");
+		System.out.println(studentLee.studentName+ " 학생 카드 번호 : "+ studentLee.cardNumber);
+		
+		Student3 studentJ = new Student3();
+		studentJ.setStudentName("Lebron James");
+		System.out.println(studentJ.studentName+ " 학생 카드 번호 : "+ studentJ.cardNumber);
+	}
+
+}
+-------------------------------------------------------------------------------
+이윤섭 학생 카드 번호 : 1101
+Lebron James 학생 카드 번호 : 1102
+-------------------------------------------------------------------------------
+
+
+6-4) 변수 유효 범위
+지금까지 배운 변수
+1. 지역 변수(local variable) : 함수나 메서드 안에서만 사용 가능
+2. 인스턴스 변수(instance variable) : 클래스 안에서 사용하는 맴버 변수
+3. static 변수(class variable) : 여러 인스턴스에서 공통으로 사용할 수 있는 변수
+=> 어디에 어떻게 선언하느냐에 따라서 '유효 범위'가 달라진다.
+
+1. 지역 변수의 유효 범위
+: 함수나 메서드 내부에 선언하기 때문에 함수 밖에서는 사용할 수 없다.
+  (하나의 함수에 선언한 지역 변수는 다른 함수에서 사용할 수 없다.)
+=> 지역 변수가 생성되는 메모리 : "스택(stack)" : 함수가 호출될 때 생성되었다가 함수가 반환되면
+										 할당되었던 메모리 공간이 해제되면서 사라진다.
+
+2. 맴버 변수(인스턴스 변수)의 유효 범위
+: 클래스가 생성될 때, 힙 메모리(heap memory)에 생성되는 변수
+: 클래스의 어느 메서드에서나 사용 가능
+=> 가비지 컬렉터(garbage collector)에 의해 수거되면 메모리에서 사라진다.
+> 클래스 내부의 여러 메서드에서 사용할 변수는 맴버 변수로 선언!!!
+
+3. static 변수(클래스 변수)의 유효 범위
+: 사용자가 프로그램을 실행하면 메모리에 프로그램이 상주한다.
+=> 프로그램 영역 중 데이터 영역에서 static 변수 생성 
+: 인스턴스 변수와 달리 new가 사용되지 않고, static 변수는 클래스 생성과 상관없이 처음부터 데이터 영역 메모리에서 생성된다.
+=> static 변수는 사용하는 메모리가 다르다.
+> 클래스 외부에서도 객체 생성과 무관하게 사용할 수 있다.
+> 크기가 너무 큰 변수는 static이 부적절하다.
+
+--------------------------------------------------------------------------------------------
+변수에 따른 용도 정리
+--------------------------------------------------------------------------------------------
+변수 유형			선언 위치			사용 범위						메모리	생성과 소멸		
+
+지역변수			함수 내부			함수 내부에서만					스택		함수가 호출될때 생성,
+(로컬 변수)						사용									함수가 끝나면 소멸
+																	
+맴버 변수			클래스 맴버 변수	클래스 내부에서 사용하고 			힙		인스턴스가 생성될때 생성,
+(인스턴스 변수)		로 선언			private이 아니면 참조					가비지 컬렉터가 메모리를
+								변수로 다른 클래스에서 사용				 수거할때 소멸
+
+static 변수		static 예약어를 	클래스 내부에서 사용하고			데이터	프로그램이 처음 시작할때
+(클래스 변수)		사용하여 클래스		private 이 아니면 클래스 이름		영역		상수와 함께 데이터 영역에 생성,
+				내부에 선언		으로 다른 클래스에서 사용 가능				프로그램이 끝나고 메모리를
+																	해제할때 소멸
+--------------------------------------------------------------------------------------------
+: 변수는 특성에 맞게 사용하는 것이 좋다.
+예)
+1. 클래스의 여러 메서드에서 사용할 변수를 지역 변수로 선언하면 다른 메서드에서 그 변수를 사용해야 할 때
+지역 변수를 메서드의 매개변수로 전달해야 하므로 번거롭다.
+2. 모든 변수를 맴버 변수나 static 변수로 선언하면 메모리 낭비가 심해지고, 코드의 가독성이 떨어진다.
+=> 용도에 맞게 변수 유형을 정해서 입력하면 효율적인 프로그래밍이 된다.
+
+-------------------------------------------------------------------------------
+Q1) 함수에서 기능 구현을 위해 잠시 사용? = 지역 변수
+Q2) 클래스의 속성을 나타내고 각 인스턴스마다 다른 값을 가진다면? = 맴버 변수
+Q3) 여러 인스턴스에서 공유해서 사용하도록 한 번만 생성되어야 한다면? = static 변수
+-------------------------------------------------------------------------------
+
+
+6-5) static 응용 - 싱글톤 패턴
+- 싱글톤 패턴(singleton pattern)이란?
+: 객체 지향 프로그램에서 인스턴스를 단 하나만 생성하는 디자인 패턴
+> 여러 개의 인스턴스가 필요한 경우도 있고, 단 하나의 인스턴스만 필요한 경우도 있다.
+  즉, static 응용하여 프로그램 전반에서 사용하는 인스턴스를 하나만 구현하는 방식
+  (실무나 여러 프레임워크에서 많이 사용하는 패턴이다.)
+  
+------------------------------------------------------------
+프레임워크(Framework)?
+: 프로그램을 쉽게 개발하기 위해 구체적인 기능 설계와 구현을 미리 만들어 놓은 도구
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+디자인 패턴(Design Pattern)이란?
+: 객체 지향 프로그램을 어떻게 구현해야 좀 더 유연하고 재활용성이 높은 프로그램을
+  만들 수 있는지를 정리한 내용
+> 즉, 프로그램 특성에 따른 설계 유형을 이론화한 내용으로, 특정 알고리즘이나 
+  프로그래밍 언어를 위한 라이브러리가 아니라 객체 지향으로 설계하는 방법을 설명한것
+(책 한권을 할애할 정도로 방대한 역영임) java, C, C++, C#
+-------------------------------------------------------------
+
+
+# 싱글톤 패턴으로 회사 클래스 구현하기
+)1단계: 생성자를 private으로 만들기
+: 싱글톤 패턴에서는 생성자를 반드시 명시적으로 만들고 그 접근 제어자를 private으로 지정해야 한다.
+  그래야 외부에서 함부로 접근하지 못하게 된다.
+-------------------------------------------------------------------------------
+private 생성자 만들기
+-------------------------------------------------------------------------------
+package singleton;
+
+public class Company {
+	private Company() {	}
+}
+-------------------------------------------------------------------------------
+
+)2단계: 클래스 내부에 static으로 유일한 인스턴스 생성하기
+: 인스턴스 하나는 필요하다. private으로 선언하여 외부에서 이 인스턴스에 접근하지 못하도록 제한해야
+  인스턴스 오류를 방지할 수 있다.
+-------------------------------------------------------------------------------
+인스턴스 생성하기
+-------------------------------------------------------------------------------
+package singleton;
+
+public class Company {
+		private static Company instance = new Company(); //유일하게 생성한 인스턴스
+		private Company() {	}
+}
+-------------------------------------------------------------------------------
+
+
+)3단계: 외부에서 참조할 수 있는 public 메서드 만들기
+: 선언한 private으로 선언한 유일한 인스턴스를 외부에서도 사용할 수 있게 설정
+  이를 위해 public 메서드를 생성하고, 유일하게 생성된 인스턴스를 반환해 준다.
+-------------------------------------------------------------------------------
+public 메서드 만들기
+-------------------------------------------------------------------------------
+package singleton;
+
+public class Company {
+		private static Company instance = new Company(); //유일하게 생성한 인스턴스
+		private Company() {	}
+		
+		public static Company getInstance() {
+			if(instance == null) {
+				instance = new Company();
+			}
+			return instance;	//유일하게 생성한 인스턴스 반환
+		}
+}
+-------------------------------------------------------------------------------
+
+)4단계: 실제로 사용하는 코드 만들기
+-------------------------------------------------------------------------------
+변수의 주소 값 비교하기
+-------------------------------------------------------------------------------
+package singleton;
+
+public class CompanyTest {
+	public static void main(String[] args) {
+		Company myCompany1 = Company.getInstance();
+		Company myCompany2 = Company.getInstance();
+		System.out.println(myCompany1 == myCompany2);
+	}
+}
+-------------------------------------------------------------------------------
+true
+-------------------------------------------------------------------------------
+: 동일한 참조를 갖는 동일한 인스턴스
