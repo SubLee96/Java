@@ -1,0 +1,560 @@
+Java Programming
+
+7) 배열과 ArrayList(1)
+: 지금까지 사용한 변수는 자료 한 개를 저장하기 위한 공간이었다. 그런데, 프로그래밍을 하다보면 자료형이 자료형이
+  같은 자룔르 여러 개 처리해서 구현해야 하는 일이 종종 생긴다.
+  => 변수를 각각 선언하는 것보다 여러 자료를 한 번에 처리할 수 있는 기능이 필요하다.
+
+7-1) 배열이란?
+
+# 자료를 순차적으로 관리하는 구조, 배열
+: 학생이 100명이라 하면 변수 100개를 선언해서 사용해야한다.
+=> 이때 사용하는 방법이 "배열(array)"이다.
+   즉, 배열을 사용하면 자료형이 같은 자료 여러 개를 한 번에 관리할 수 있다.
+
+
+# 배열 선언과 초기화
+: 배열을 사용하기 위해서는 배열을 선언해야 한다.
+: 배열도 변수와 마찬가지로 자료형을 함께 선언해야 한다.
+: 배열을 이루는 요소 "배열 요소" : 자료형이 동일하다.
+
+--------------------------------------
+자료형 [] / 배열 이름 = new / 자료형[개수];
+자료형 / 배열 이름[] = new / 자료형[개수];
+--------------------------------------
+예) int[ ] studentIDs = new int[10]; //int형 요소가 10개인 배열 선언
+=> 4바이트의 10개 공간이 할당된다. = 40바이트의 메모리가 할당된다.
+
+
+= 배열 초기화하기
+: java에서 배열을 선언하면 그와 동시에 각 요소의 값이 초기화된다.
+-------------------------------------------------------------------------------
+int[] studentIDs = new int[] {101, 102, 103}; //개수는 생략함
+int[] studentIDs = new int[3] {101, 102, 103}; //오류 발생 : 개수와 함께 사용하면 오류가 생긴다.
+int[] studentIDs = {101, 102, 103}; //int형 요소가 3개인 배열 생성가능
+-------------------------------------------------------------------------------
+int[] studentIDs; //배열 자료형 선언
+studentIDs = new int[] {101, 102, 103}; //new int[]를 생략할 수 없음.
+-------------------------------------------------------------------------------
+
+
+# 배열 사용하기
+: studentIDs[0] = 10; //배열의 첫 번째 요소에 값 10을 저장
+
+= 인덱스 연산자[]
+: []는 배열을 처음 선언할 때 사용한 연산자이다.
+> 인덱스 연산의 기능 : 배열 요소가 저장된 메모리 위치를 찾아주는 역할을 수행한다.
+
+예1) 배열의 요소에 값 저장하기
+: num[3] = 25;
+> num 배열의 네 번째 요소에 값 25를 저장
+예2) 배열 요소의 값 가져오기
+: age = num[3];
+> age 변수에 num 배열의 네 번째 요소 값을 저장
+
+
+배열의 물리적 위치와 논리적 위치는 동일하다.
+: 물리적 위치 = 배열이 메모리에서 실제 저장되는 곳
+: 논리적 위치 = 이론상 배열 위치를 의미한다.
+=>  배열은 요소 10개를 선언하면 사용하는 실제 값도 바로 이웃한 메모리에 놓인다.
+예외) 배열 이외에 다른 자료구조를 보면 논리적 위치는 바로 이웃하지만, 실제 메모리상 물리적 위치는 완전히 동떨어진다.
+
+= 배열 순서는 0번부터
+: 배열의 길이(처음에 선언한 배열 전체 요소 개수)가 n이 라면, 배열 순서는 0번부터 n-1번까지이다.
+
+-------------------------------------------------------------------------------
+package array;
+
+public class ArrayTest {
+
+	public static void main(String[] args) {
+		int[] num = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		
+		//배열의 첫 번째 요소인 num[0]부터 열 번째 요소인 num[9]까지 10개 요소 값 출력
+		for(int i = 0; i < num.length; i++) {
+			System.out.print(num[i]);
+		}
+	}
+
+}
+-------------------------------------------------------------------------------
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+-------------------------------------------------------------------------------
+: for(i = 0; i <= 9; i++)보다 for(i = 0; i < 10; i++)을 사용한다.
+=> 직관적으로 봤을때, 배열 길이를 한 번에 볼 수 있는 10이 좋다.
+num.length는 10이 된다.
+
+>1분 복습하기
+-------------------------------------------------------------------------------
+package array;
+
+public class ArrayTest {
+
+	public static void main(String[] args) {
+		int[] num = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		int sum = 0;
+		
+		for(int i = 0; i < num.length; i++) {
+			sum += num[i];
+		}
+		System.out.print(sum);
+	}
+}
+-------------------------------------------------------------------------------
+55
+-------------------------------------------------------------------------------
+
+
+= 전체 배열 길이와 유효한 요소 값
+: 처음 선언한 배열 길이만큼 값을 저장해서 사용하는 경우는 드물다.
+
+-----------------
+배열길이만큼 출력하기
+-------------------------------------------------------------------------------
+package array;
+
+public class ArrayTest2 {
+	public static void main(String[] args) {
+		double[] data = new double[5];	//double형으로 길이 5인 배열 선언
+		
+		data[0] = 10.0; //첫 번째 요소에 값 10.0 대입
+		data[1] = 20.0;	//두 번째 요소에 값 20.0 대입
+		data[2] = 30.0;	//세 번째 요소에 값 30.0 대입
+		
+		for(int i = 0; i < data.length; i++) {
+			System.out.println(data[i]);
+		}
+	}
+}
+-------------------------------------------------------------------------------
+10.0
+20.0
+30.0
+0.0
+0.0
+-------------------------------------------------------------------------------
+: 세 번째 요소까지만 적당한 값이 할당되어 저장되었다.
+
+-----------------------
+배열의 유효한 요소 값 출력하기
+-------------------------------------------------------------------------------
+package array;
+
+public class ArrayTest3 {
+	public static void main(String[] args) {
+		double[] data = new double[5];
+		int size = 0;		//유효한 값이 저장된 배열 개수를 저장할 변수 선언
+		
+		data[0] = 10.0; size++;
+		data[1] = 20.0; size++;		//값을 저장한 후 size 변수 값 증가
+		data[2] = 30.0; size++;
+		
+		for(int i = 0; i < size; i++) {
+			System.out.println(data[i]);
+		}
+	}
+}
+-------------------------------------------------------------------------------
+10.0
+20.0
+30.0
+-------------------------------------------------------------------------------
+
+
+# 문자 저장 배열 만들기
+: 무자 자료형 배열을 만들 때 : char[]선언!
+
+----------------------------
+알파벳 문자와 아스키 코드 값 출력하기
+-------------------------------------------------------------------------------
+package array;
+
+public class CharArray {
+	public static void main(String[] args) {
+		char[] alphabets = new char[26];
+		char ch = 'A';
+		
+		for(int i = 0; i < alphabets.length; i++, ch++) {
+			alphabets[i] = ch;	//아스키 값으로 각 요소에 저장
+		}
+		
+		for(int i = 0; i < alphabets.length; i++) {
+			System.out.println(alphabets[i] + " ," + (int)alphabets[i]);
+		}
+	}
+}
+-------------------------------------------------------------------------------
+A ,65
+B ,66
+C ,67
+D ,68
+E ,69
+F ,70
+G ,71
+H ,72
+I ,73
+J ,74
+K ,75
+L ,76
+M ,77
+N ,78
+O ,79
+P ,80
+Q ,81
+R ,82
+S ,83
+T ,84
+U ,85
+V ,86
+W ,87
+X ,88
+Y ,89
+Z ,90
+-------------------------------------------------------------------------------
+
+
+# 객체 배열 사용하기
+: 참조 자료형도 여러 개 사용할 수 있다.
+
+----------------
+객체 배열 만들기(1)
+-------------------------------------------------------------------------------
+package array;
+
+public class Book {
+	private String bookName;
+	private String author;
+	
+	public Book() {	}
+	
+	public Book(String bookName, String author) {
+		this.bookName = bookName;
+		this.author = author;
+	}
+
+	public String getBookName() {
+		return bookName;
+	}
+
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
+	public void showInfo() {
+		System.out.println(bookName + ", " + author);
+	}
+}
+-------------------------------------------------------------------------------
+
+객체 배열 만들기(2)
+-------------------------------------------------------------------------------
+package array;
+
+public class BookArray {
+	public static void main(String[] args) {
+		Book[] library = new Book[5];		//공간을 5개 만든다.
+		
+		for(int i = 0; i <library.length; i++) {
+			System.out.println(library[i]);
+		}
+	}
+}
+-------------------------------------------------------------------------------
+
+객체 배열 만들기(3)
+-------------------------------------------------------------------------------
+package array;
+
+public class BookArray2 {
+	public static void main(String[] args) {
+		Book[] library = new Book[5];
+		
+		library[0] = new Book("태백 산맥", "조정래");
+		library[1] = new Book("데미안", "헤르만 헤세");
+		library[2] = new Book("연금술사", "파울로 코엘료");
+		library[3] = new Book("토지", "박경리");
+		library[4] = new Book("어린왕자", "생텍쥐페리");
+		
+		for(int i = 0; i < library.length; i++) {
+			library[i].showBookInfo();
+		}
+		
+		for(int i = 0; i < library.length; i++) {
+			System.out.println(library[i]);
+		}
+	}
+}
+-------------------------------------------------------------------------------
+태백 산맥, 조정래			//Book 인스턴스 맴버 변수
+데미안, 헤르만 헤세
+연금술사, 파울로 코엘료
+토지, 박경리
+어린왕자, 생텍쥐페리
+array.Book@dfd3711		//Book 인스턴스를 저장한 메모리 공간 주소
+array.Book@42d3bd8b
+array.Book@26ba2a48
+array.Book@5f2050f6
+array.Book@3b81a1bc
+-------------------------------------------------------------------------------
+
+
+# 나 혼자 코딩해보기
+-------------------------------------------------------------------------------
+package alone;
+
+public class Student {
+		private int studentID;
+		private String name;
+		
+		public Student() {}
+		
+		public Student(int studentID, String name) {
+			this.studentID = studentID;
+			this.name = name;
+		}
+
+		public int getStudentID() {
+			return studentID;
+		}
+
+		public void setStudentID(int studentID) {
+			this.studentID = studentID;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public void showStudentInfo() {
+			System.out.println(studentID + " ," + name);
+		}
+}
+-------------------------------------------------------------------------------
+package alone;
+
+public class StudentArray {
+	public static void main(String[] args) {
+		Student[] Info = new Student[3];
+		
+		Info[0] = new Student(1001, "James");
+		Info[1] = new Student(1002, "Tomas");
+		Info[2] = new Student(1003, "Edward");
+		
+		for(int i = 0; i < Info.length; i++) {
+			Info[i].showStudentInfo();
+		}
+	}
+}
+-------------------------------------------------------------------------------
+1001 ,James
+1002 ,Tomas
+1003 ,Edward
+-------------------------------------------------------------------------------
+
+
+# 배열 복사하기
+: 기존 배열과 자료형 및 배열 크기가 똑같은 배열을 새로 만들거나 배열의 모든 요소에 자료가 꽉 차서 더 큰 배열을
+  만들어 기존 배열에 저장된 자료를 가져오려 할 때 배열을 복사한다.
+
+System.arrayCopy()메서드를 사용하여 복사
+System.arrayCopy(src, srcPos, dest, destPos, length)
+
+-------------------------------------------------------------------------------
+매개변수		설명
+src			복사할 배열 이름
+srcPos		복사할 배열의 첫 번째 위치
+dest		복사해서 붙여 넣을 대상 배열 이름
+destPos		복사해서 대상 배열에 붙여 넣기를 시작할 첫 번째 위치
+length		src에서 dest로 자료를 복사할 요소 개수
+-------------------------------------------------------------------------------
+
+예제 1) System.arrayCopy()로 배열 복사하기
+-------------------------------------------------------------------------------
+package array;
+
+public class ArrayCopy {
+
+	public static void main(String[] args) {
+		int[] array1 = {10, 20, 30, 40, 50};
+		int[] array2 = {1, 2, 3, 4, 5};
+		
+	  //System.arrayCopy(src, srcPos, dest, destPos, length)
+		System.arraycopy(array1, 0, array2, 1, 4);
+		for(int i = 0; i < array2.length; i++) {
+			System.out.println(array2[i]);
+		}
+
+	}
+
+}
+-------------------------------------------------------------------------------
+1
+10
+20
+30
+40
+-------------------------------------------------------------------------------
+: 복사할 대상 배열의 전체 길이가 복사할 요소 개수보다 작다면 오류가 발생한다.
+-> 위의 예제에서 만일 요소 5개를 복사한다고 코드를 수정하면 array2배열 길이보다 요소 개수가 많아지므로 
+   오류가 발생한다.
+
+# 객체 배열 복사하기
+
+1) 얕은 복사
+: 얕은 복사(shallow copy) : 주소 값만 복사하는 행위
+-------------------------------------------------------------------------------
+package array;
+
+public class ObjectCopy2 {
+
+	public static void main(String[] args) {
+			Book[] bookArray1 = new Book[3];
+			Book[] bookArray2 = new Book[3];
+			
+			bookArray1[0] = new Book("태백산맥", "조정래");
+			bookArray1[1] = new Book("데미안", "헤르만 헤세");
+			bookArray1[2] = new Book("어떻게 살 것인가", "유시민");
+	 		System.arraycopy(bookArray1, 0, bookArray2, 0, 3);
+			
+			for(int i=0; i<bookArray2.length; i++){
+				bookArray2[i].showBookInfo();
+			}
+			
+			bookArray1[0].setBookName("나목");
+			bookArray1[0].setAuthor("박완서");
+			
+			System.out.println("=== bookArray1 ===");
+			for(int i=0; i<bookArray1.length; i++){
+				bookArray1[i].showBookInfo();
+			}
+			
+			System.out.println("=== bookArray2 ===");
+			for(int i=0; i<bookArray2.length; i++){
+				bookArray2[i].showBookInfo();
+			}
+	}
+
+}
+-------------------------------------------------------------------------------
+태백산맥, 조정래
+데미안, 헤르만 헤세
+어떻게 살 것인가, 유시민
+=== bookArray1 ===
+나목, 박완서
+데미안, 헤르만 헤세
+어떻게 살 것인가, 유시민
+=== bookArray2 ===
+나목, 박완서				//변경 사항이 bookArray2에 반영되었다.
+데미안, 헤르만 헤세
+어떻게 살 것인가, 유시민
+
+-------------------------------------------------------------------------------
+
+2) 깊은 복사
+: 깊은복사(deep copy) : 인스턴스를 따로 관리하고 싶다면 직접 인스턴스를 만들고 그 값을 복사해야한다.
+
+-------------------------------------------------------------------------------
+package array;
+
+public class ObjectCopy3 {
+
+	public static void main(String[] args) {
+		Book[] bookArray1 = new Book[3];
+		Book[] bookArray2 = new Book[3];
+		
+		bookArray1[0] = new Book("태백산맥", "조정래");
+		bookArray1[1] = new Book("데미안", "헤르만 헤세");
+		bookArray1[2] = new Book("연금술사", "파울로 코엘료");
+		
+		bookArray2[0] = new Book();
+		bookArray2[1] = new Book();
+		bookArray2[2] = new Book();
+		
+		for(int i = 0; i < bookArray1.length; i++) {
+			bookArray2[i].setBookName(bookArray1[i].getBookName());
+			bookArray2[i].setAuthor(bookArray1[i].getAuthor());
+    }
+
+		for(int i = 0; i < bookArray2.length; i++) {
+			bookArray2[i].showBookInfo();
+		}
+		
+		bookArray1[0].setBookName("나목");
+		bookArray1[1].setAuthor("박경리"); 
+		System.out.println("=== bookArray1 ===");
+		for(int i = 0; i < bookArray1.length; i++) {
+			bookArray1[i].showBookInfo();
+		}
+		
+		System.out.println("=== bookArray2 ===");
+		for(int i = 0; i < bookArray2.length; i++) {
+			bookArray2[i].showBookInfo();
+		}
+	}
+
+}
+-------------------------------------------------------------------------------
+태백산맥, 조정래
+데미안, 헤르만 헤세
+연금술사, 파울로 코엘료
+=== bookArray1 ===
+나목, 조정래
+데미안, 박경리
+연금술사, 파울로 코엘료
+=== bookArray2 ===
+태백산맥, 조정래
+데미안, 헤르만 헤세
+연금술사, 파울로 코엘료
+-------------------------------------------------------------------------------
+
+
+# 향상된 for문과 배열(enhanced for loop)
+: 배열의 처음에서 끝까지 모든 요소를 참조할 때 사용하면 편리한 반복문이다.
+
+형식
+----------------------
+for(변수 : 배열) {
+	반복 실행문;
+}
+----------------------
+향상된 for문 사용하기
+-------------------------------------------------------------------------------
+package array;
+
+public class EnhancedForLoop {
+	public static void main(String[] args) {
+		String[] strArray = {"Java", "Android", "C", "JavaScript", "Python"};
+	
+		for(String lang : strArray) {	//변수에 배열의 각 요소가 대입된다.
+			System.out.println(lang);
+		}
+	}
+}
+-------------------------------------------------------------------------------
+Java
+Android
+C
+JavaScript
+Python
+-------------------------------------------------------------------------------
