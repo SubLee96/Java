@@ -1,0 +1,448 @@
+Java Programming
+
+10) 인터페이스(1)
+: 모든 클래스가 추상 메서드로만 이루어진 인터페이스!
+
+10-1) 인터페이스란?
+: 인터페이스(Interface) : 클래스 혹은 프로그램이 제공하는 기능을 명시적으로 선언하는 역할을 수행한다.
+> 추상 메서드와 상수로만 이루어져 있다.
+
+= 인터페이스 만들기
+Calc 인터페이스 만들기(Calc.java)
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public interface Calc {
+	
+	//인터페이스에서 선언한 변수는 컴파일 과정에서 상수로 변환됨.
+	double PI = 3.14;
+	int ERROR = -9999999;
+	
+	//인터페이스에서 선언한 메서드는 컴파일 과정에서 추상 메서드로 변환됨.
+	int add(int num1, int num2);
+	int subtract(int num1, int num2);
+	int times(int num1, int num2);
+	int divide(int num1, int num2);
+}
+-------------------------------------------------------------------------------
+: 인터페이스에 선언한 메서드는 모두 구현 코드가 없는 추상 메서드이다.
+> 즉, public abstract 예약어를 명시적으로 사용하지 않아도 컴파일 과정에서 자동으로 추상 메서드로 변환된다.
+: 인터페이스에 선언한 변수는 모두 컴파일 과정에서 값이 변하지 않는 상수로 자동 변환된다.
+> 즉, public static final 예약어를 사용하지 않아도 무조건 상수로 인식한다. 
+
+# 클래스에서 인터페이스 구현하기
+: '클래스에서 인터페이스를 구현한다(implements)' : 선언한 인터페이스를 클래스가 사용하는 것
+(상위 클래세어 구현한 기능을 하위 클래스에 선언하는 기능 : extends)
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public class Calculator implements Calc {	//오류 발생
+	
+}
+-------------------------------------------------------------------------------
+: Calc 인터페이스를 구현하고 있으므로 Calculator 클래스는 추상 메서드 4개(add(), subtract(), times(), divide())를
+  구현하지 않으면 Calculator 클래스도 추상 클래스가 된다.
+
+인터페이스 구현하기(Calculator.java)
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public abstract class Calculator implements Calc {
+	@Override
+	public int add(int num1, int num2) {
+		return num1 + num2;
+	}
+	
+	@Override
+	public int subtract(int num1, int num2) {
+		return num1 - num2;
+	}
+}
+-------------------------------------------------------------------------------
+: add()와 subtract()만 구현함.
+
+# 클래스 완성하고 실행하기
+: 아직 구현하지 않은 times()와 divide() 추상 메서드를 이 클래스에 구현한다.
+
+계산기 클래스 만들기(CompleteCalc.java)
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public class CompleteCalc extends Calculator {
+	@Override
+	public int times(int num1, int num2) {
+		return num1 * num2;
+	}
+	
+	@Override
+	public int divide(int num1, int num2) {
+		if(num2 != 0) 
+			return num1 / num2;
+		else
+			return Calc.ERROR;	//num2가 0, 즉 나누는 수가 0인 경우에 대해 오류 반환
+	}
+	
+	//CompleteCalc에서 추가로 구현한 메서드
+	public void showInfo() {
+		System.out.println("Calc 인터페이스를 구현하였습니다.");
+	}
+}
+-------------------------------------------------------------------------------
+: 숫자를 0으로 나눌 수 없기에 나누는 수 num2가 0이 아닐 경우에만 나누기 연산을 진행한다.
+  즉, Calc.ERROR 메시지를 보낸다.
+  
+CompleteCalc 클래스 실행하기(CalculatorTest.java)
+-------------------------------------------------------------------------------  
+package interfaceex;
+
+public class CalculatorTest {
+	public static void main(String[] args) {
+		int num1 = 10;
+		int num2 = 5;
+		
+		CompleteCalc calc = new CompleteCalc();
+		System.out.println(calc.add(num1, num2));
+		System.out.println(calc.subtract(num1, num2));
+		System.out.println(calc.times(num1, num2));
+		System.out.println(calc.divide(num1, num2));
+		calc.showInfo();
+	}
+}
+-------------------------------------------------------------------------------
+15
+5
+50
+2
+Calc 인터페이스를 구현하였습니다.
+-------------------------------------------------------------------------------
+: Calculator  클래스는 추상 클래스이므로 인스턴스를 생성할 수 없다.
+  Calc 인터페이스는 추상 메서드만으로 선언되었기 때문에 인스턴스를 생성할 수 없다.
+
+# 인터페이스 구현과 형 변환
+=========================================================================
+인터페이스를 구현한 클래스가 있을 때 그 클래스는 해당 인터페이스형으로 묵시적 형 변환이 이루어지며, 
+형 변환되었을 때, 사용할 수 있는 메서드는 인터페이스에서 선언한 메서드뿐이다.
+=========================================================================
+
+나 혼자 코딩
+: Calc 인터페이스에 int square(int num)을 추가하로 선언
+: 매개변수로 전달된 값의 제곱을 반환하는 메서드
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public interface Calc {
+	
+	//인터페이스에서 선언한 변수는 컴파일 과정에서 상수로 변환됨.
+	double PI = 3.14;
+	int ERROR = -9999999;
+	
+	//인터페이스에서 선언한 메서드는 컴파일 과정에서 추상 메서드로 변환됨.
+	int add(int num1, int num2);
+	int subtract(int num1, int num2);
+	int times(int num1, int num2);
+	int divide(int num1, int num2);
+	int square(int num);
+}
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public class CompleteCalc extends Calculator {
+	@Override
+	public int times(int num1, int num2) {
+		return num1 * num2;
+	}
+	
+	@Override
+	public int divide(int num1, int num2) {
+		if(num2 != 0) 
+			return num1 / num2;
+		else
+			return Calc.ERROR;	//num2가 0, 즉 나누는 수가 0인 경우에 대해 오류 반환
+	}
+	
+	@Override
+	public int square(int num) {
+		return num * num;
+	}
+	
+	//CompleteCalc에서 추가로 구현한 메서드
+	public void showInfo() {
+		System.out.println("Calc 인터페이스를 구현하였습니다.");
+	}
+}
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public class CalculatorTest {
+	public static void main(String[] args) {
+		int num1 = 10;
+		int num2 = 5;
+		
+		CompleteCalc calc = new CompleteCalc();
+		System.out.println(calc.add(num1, num2));
+		System.out.println(calc.subtract(num1, num2));
+		System.out.println(calc.times(num1, num2));
+		System.out.println(calc.divide(num1, num2));
+		System.out.println(calc.square(num1));
+		calc.showInfo();
+	}
+}
+-------------------------------------------------------------------------------
+15
+5
+50
+2
+100
+Calc 인터페이스를 구현하였습니다.
+-------------------------------------------------------------------------------
+
+
+10-2) 인터페이스와 다형성
+
+# 인터페이스의 역할
+: 인터페이스는 클라이언트 프로그램에 어떤 메서드를 제공하는지 미리 알려주는 명세(specification) 또는 약속의
+  역할을 수행한다.
+  
+예) 선언부만 봐도 어떻게 사용될지 대략적으로 알 수 있다. 
+-------------------------------------------------------------------------------
+클라이언트 : 기능을 사용하는 측
+서버 : 기능을 제공하는 측
+-------------------------------------------------------------------------------
+
+=========================================================================
+인터페이스의 역할은 인터페이스를 구현한 클래스가 어떤 기능의 메서드를 제공하는지 명시하는 것이고,
+클라이언트 프로그램은 인터페이스에서 약속한 명세대로 구현한 클래스를 생성해서 사용하면 된다.
+=========================================================================
+
+# 인터페이스와 다형성
+: 인터페이스를 사용하면 확장성 있는 프로그램을 구현할 수 있다.
+(클라이언트 프로그램을 많이 수정하지 않고 기능을 추가하거나 다른 기능을 사용할 수 있다.)
+
+고객 상담 전화 배분 프로그램
+-------------------------------------------------------------------------------
+예제 시나리오)
+: 고객 센터에서 전화 상담을 하게 되면 대기열을 받게 된다.
+: 상담원이 지정되기 전까지는 대기 상태이다.
+1. 순서대로 배분하기 : 모든 상담원이 동일한 상담 건수를 처리하도록 들어오는 전화 순서대로 상담원에게 하나씩 배분
+2. 짧은 대기열 찾아 배분하기 : 고객 대기 시간을 줄이기 위해 상담을 하지 않는 상담원이나 가장 짧은 대기열을 보유한 상담원에게 배분한다.
+3. 우선순위에 따라 배분하기 : 고객 등급에 따라 등급이 높은 고객의 전화를 우선 가져와서 업무 능력이 좋은 상담원에게 우선 배분한다.
+-------------------------------------------------------------------------------
+
+Scheduler 인터페이스 정의하기(Scheduler.java)
+-------------------------------------------------------------------------------
+package scheduler;
+
+public interface Scheduler {
+	public void getNextCall();
+	public void sendCallToAgent();
+}
+-------------------------------------------------------------------------------
+: 추상 메서드 2개를 구현했다.
+
+순서대로 배분하기(RoundRobin.java)
+-------------------------------------------------------------------------------
+package scheduler;
+
+//상담원 한 명씩 돌아가며 동일하게 상담 업무 배분
+public class RoundRobin implements Scheduler {
+	@Override
+	public void getNextCall() {
+		System.out.println("상담 전화를 순서대로 대기열에서 가져옵니다.");
+	}
+	
+	@Override
+	public void sendCallToAgent() {
+		System.out.println("다음 순서 상담원에게 배분합니다.");
+	}
+}
+-------------------------------------------------------------------------------
+: 예제 시나리오 1번을 구현!
+> 고객 센터에 걸려온 상담 전화를 순서대로 가져와서 상담원에게 배분
+
+짧은 대기열 먼저 배분하기(LeastJob.java)
+-------------------------------------------------------------------------------
+package scheduler;
+
+//현재 상담 업무가 없거나 상담 개기가 가장 적은 상담원에게 배분
+public class LeastJob implements Scheduler {
+	@Override
+	public void getNextCall() {
+		System.out.println("상담 전화를 순서대로 대기열에서 가져옵니다.");
+	}
+	
+	@Override
+	public void sendCallToAgent() {
+		System.out.println("현재 상담 없무가 없거나 대디가 가장 적은 상담원에게 할당합니다.");
+	}
+}
+-------------------------------------------------------------------------------
+: 예제 시나리오 2번을 구현!
+> 고객 센터에 걸려온 상담 전화를 순서대로 가져와서 현재 상담 업무가 없거나 상담 대기가 가장 적은 상담원에게 배분
+
+우선순위에 따라 배분하기(PriorityAllocation.java)
+-------------------------------------------------------------------------------
+package scheduler;
+
+//고객 등급이 높은 고객의 전화부터 대기열에서 가져와 업무 능력이 높은 상담원에게 우선 배분
+public class PriorityAllocation implements Scheduler {
+	@Override
+	public void getNextCall() {
+		System.out.println("고객 등급이 높은 고객의 전화를 먼저 가져옵니다.");
+	}
+	
+	@Override
+	public void sendCallToAgent() {
+		System.out.println("업무 skill 값이 높은 상담원에게 우선적으로 배분합니다.");
+	}
+}
+-------------------------------------------------------------------------------
+: 예제 시나리오 3번 구현
+> 고객 센터에 걸려온 상담 전화 중 고객 등급이 높은 고객의 전화를 먼저 가져와서 업무 능력이 가장 좋은 상담원에게 배분
+
+= 콘솔 화면 실행하기!!!
+입력 문자에 따라 배분 정책 수행하기
+-------------------------------------------------------------------------------
+package scheduler;
+
+import java.io.IOException;
+
+public class SchedulerTest {
+	public static void main(String[] args) throws IOException {
+		//문자를 입력받는 System.in.read()를 사용하려면 IOException에서 오류를 처리해야한다.
+		System.out.println("전화 상담 할당 방식을 선택하세요.");
+		System.out.println("R : 한 명씩 차례로 할당 ");
+		System.out.println("L : 쉬고 있거나 대기가 가장 적은 상담원에게 할당 ");
+		System.out.println("P : 우선순위가 높은 고객 먼저 할당 ");
+		
+		int ch = System.in.read(); //할당 방식을 입력받아 ch 변수에 대입
+		Scheduler scheduler = null;
+		
+		// 입력받은 값이 R 또는 r이면 RoundRobin 클래스 생성
+		if (ch =='R' || ch =='r') {
+			scheduler = new RoundRobin();
+		}
+		
+		// 입력받은 값이 L 또는 l이면 LeastJob 클래스 생성
+		else if (ch == 'L' || ch == 'l') {
+			scheduler = new LeastJob();
+		}
+		
+		// 입력받은 값이 P 또는 p이면 PriorityAllocation 클래스 생성
+		else if (ch == 'P' || ch == 'p') {
+			scheduler = new PriorityAllocation();
+		}
+		else {
+			System.out.println("지원되지 않는 기능입니다.");
+			return;
+		}
+		
+		//어떤 정책인가와 상관없이 인터페이스에 선언한 메서드 호출
+		scheduler.getNextCall();
+		scheduler.sendCallToAgent();
+	}
+}
+-------------------------------------------------------------------------------
+전화 상담 할당 방식을 선택하세요.
+R : 한 명씩 차례로 할당 
+L : 쉬고 있거나 대기가 가장 적은 상담원에게 할당 
+P : 우선순위가 높은 고객 먼저 할당 
+| (입력 커서 입력)
+R | r : 상담 전화를 순서대로 대기열에서 가져옵니다.
+		다음 순서 상담원에게 배분합니다.
+L | l : 상담 전화를 순서대로 대기열에서 가져옵니다.
+		현재 상담 없무가 없거나 대디가 가장 적은 상담원에게 할당합니다.
+P | p : 고객 등급이 높은 고객의 전화를 먼저 가져옵니다.
+		업무 skill 값이 높은 상담원에게 우선적으로 배분합니다.
+다른 문자열 : 지원되지 않는 기능입니다.
+-------------------------------------------------------------------------------
+
+# 클라이언트가 클래스를 사용하는 방법
+: 배분 정책에 따라서 추가적으로 클래스를 새로 추가하면 된다.
+> 어떤 클래스를 구현하건간에 클라이언트가 인터페이스를 구현한 클래스를 사용하는 방식은
+=========================================================================
+scheduler.getNextCall();
+scheduler.sendCallToAgent();
+=========================================================================
+ 이 코드를 사용하면 된다.
+
+나 혼자 코딩
+: 상담원이 본인이 필요할 때 가져오는 정책 추가
+: AgentGetCall 클래스 추가 생성
+1) getNextCall() 일때, '상담원이 다음 전화 요청'이라 출력
+2) sendCallToAgent() 일때, '상담원이 전화 상담을 가져갔습니다.' 출력
+: A 또는 a를 입력하면 선탣된다.
+: AgentGetCall 클래스가 Scheduler 인터페이스를 구현, Schedulerf Test에서 생성하여 사용!
+
+AgentGetCall.java
+-------------------------------------------------------------------------------
+package scheduler;
+
+public class AgentGetCall implements Scheduler {
+	@Override
+	public void getNextCall() {
+		System.out.println("상담원이 다음 전화 요청");
+	}
+	
+	@Override
+	public void sendCallToAgent() {
+		System.out.println("상담원이 전화 상담을 가져갔습니다.");
+	}
+}
+
+-------------------------------------------------------------------------------
+
+SchedulerTest.java
+-------------------------------------------------------------------------------
+package scheduler;
+
+import java.io.IOException;
+
+public class SchedulerTest {
+	public static void main(String[] args) throws IOException {
+		//문자를 입력받는 System.in.read()를 사용하려면 IOException에서 오류를 처리해야한다.
+		System.out.println("전화 상담 할당 방식을 선택하세요.");
+		System.out.println("R : 한 명씩 차례로 할당 ");
+		System.out.println("L : 쉬고 있거나 대기가 가장 적은 상담원에게 할당 ");
+		System.out.println("P : 우선순위가 높은 고객 먼저 할당 ");
+		System.out.println("A : 상담원이 본인이 필요할 경우에 상담 가져가기");
+		
+		int ch = System.in.read(); //할당 방식을 입력받아 ch 변수에 대입
+		Scheduler scheduler = null;
+		
+		// 입력받은 값이 R 또는 r이면 RoundRobin 클래스 생성
+		if (ch =='R' || ch =='r') {
+			scheduler = new RoundRobin();
+		}
+		
+		// 입력받은 값이 L 또는 l이면 LeastJob 클래스 생성
+		else if (ch == 'L' || ch == 'l') {
+			scheduler = new LeastJob();
+		}
+		
+		// 입력받은 값이 P 또는 p이면 PriorityAllocation 클래스 생성
+		else if (ch == 'P' || ch == 'p') {
+			scheduler = new PriorityAllocation();
+		}
+		
+		else if (ch == 'A' || ch == 'a') {
+			scheduler = new AgentGetCall();
+		}
+		else {
+			System.out.println("지원되지 않는 기능입니다.");
+			return;
+		}
+		
+		//어떤 정책인가와 상관없이 인터페이스에 선언한 메서드 호출
+		scheduler.getNextCall();
+		scheduler.sendCallToAgent();
+	}
+}
+-------------------------------------------------------------------------------
+전화 상담 할당 방식을 선택하세요.
+R : 한 명씩 차례로 할당 
+L : 쉬고 있거나 대기가 가장 적은 상담원에게 할당 
+P : 우선순위가 높은 고객 먼저 할당 
+A : 상담원이 본인이 필요할 경우에 상담 가져가기
+A | a : 상담원이 다음 전화 요청
+	    상담원이 전화 상담을 가져갔습니다.
+-------------------------------------------------------------------------------
