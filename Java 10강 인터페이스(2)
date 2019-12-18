@@ -1,0 +1,433 @@
+Java Programming
+
+10) 인터페이스(2)
+
+10-3) 인터페이스 요소 살펴보기
+
+# 인터페이스 상수
+: 인터페이스는 추상 메서드로 이루어져 인스턴스를 생성할 수 없으며 맴버 변수도 사용할 수 없다.
+-------------------------------------------------------------------------------
+public interface Calc {
+	double PI = 3.14;		//public static final double PI = 3.14;
+	int ERROR = -9999999;	//public static final int ERROR = -99999999;
+	...
+}
+-------------------------------------------------------------------------------
+: 오류가 발생하지 않는다.
+> 인터페이스에 선언한 변수를 컴파일하면 상수로 변환되기 때문이다.
+: Calc 인터페이스에 선언한 변수 PI를 컴파일하면 public static final...으로 변환된다.
+
+# 디폴트 메서드와 정적 메서드
+: 디폴트 메서드 : 인터페이스에서 구현 코드까지 작성한 메서드
+: 정적 메서드 : 인스턴스 생성과 상관없이 사용할 수 있는 메서드
+> 이 둘을 추가했다고 해서 인스턴스를 생성할 수 있는 것은 아니다.
+
+# 디폴트 메서드
+: 기본으로 제공되는 메서드
+> 인터페이스에서 구현하지만, 이후 인터페이스를 구현한 클래스가 생성되면 그 클래스에서 사용할 기본 기능이다.
+> default예약어 사용
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public interface Calc {
+	
+	//인터페이스에서 선언한 변수는 컴파일 과정에서 상수로 변환됨.
+	double PI = 3.14;
+	int ERROR = -9999999;
+	
+	//인터페이스에서 선언한 메서드는 컴파일 과정에서 추상 메서드로 변환됨.
+	int add(int num1, int num2);
+	int subtract(int num1, int num2);
+	int times(int num1, int num2);
+	int divide(int num1, int num2);
+	int square(int num);
+	
+	default void description() {
+		System.out.println("정수 계산기를 구현합니다.");
+	}
+}
+-------------------------------------------------------------------------------
+: 디폴트 메서드는 일반 메서드와 동일하게 구현하면 된다.
+> default 예약어만 적어주면 된다.
+
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public class CalculatorTest {
+	public static void main(String[] args) {
+		int num1 = 10;
+		int num2 = 5;
+		
+		CompleteCalc calc = new CompleteCalc();
+		System.out.println(calc.add(num1, num2));
+		System.out.println(calc.subtract(num1, num2));
+		System.out.println(calc.times(num1, num2));
+		System.out.println(calc.divide(num1, num2));
+		System.out.println(calc.square(num1));
+		calc.showInfo();
+		calc.description();	//디폴트 메서드 호출
+	}
+}
+-------------------------------------------------------------------------------
+15
+5
+50
+2
+100
+Calc 인터페이스를 구현하였습니다.
+정수 계산기를 구현합니다.
+-------------------------------------------------------------------------------
+: calc.description(); 을 통해서 디폴트 메서드를 호출하면 된다.
+
+
+# 디폴트 메서드 정의하기
+: 디폴트 메서드가 원하는 기능과 맞지 않는다면 하위 클래스에서 디폴트 메서드를 재정의할 수 있다.
+> Calc 인터페이스를 구현하는 Calculator 클래스에서 재정의할 수 있다.
+> Calculator 클래스를 상속받은 CompleteCalc 클래스에서도 재정의할 수 있다.
+
+[Soure > Override/Implement Methods..]로 들어가면 description에서 자동 완성 기능을 수행하면
+-------------------------------------------------------------------------------
+	//디폴트 메서드 description()을 CompleteCalc 클래스에서 원하는 기능으로 재정의
+	@Override
+	public void description() {
+		// TODO Auto-generated method stub
+		super.description();		//인터페이스에서 선언한 메서드
+	}
+-------------------------------------------------------------------------------
+이 코드가 자동으로 만들어진다.
+
+
+# 정적 메서드 구현하기
+: 정적 메서드는 static 예약어를 사용하여 선언하며 클래스 생성과 무관하게 사용할 수 있다.
+> 인터페이스 이름으로 직접 참조하여 사용한다.
+-------------------------------------------------------------------------------
+	//인터페이스에 정적 메서드 total()구현
+	static int total(int[] arr) {
+		int total = 0;
+		
+		for(int i : arr) {
+			total += i;
+		}
+		return total;
+	}
+-------------------------------------------------------------------------------
+package interfaceex;
+
+public class CalculatorTest {
+	public static void main(String[] args) {
+		int num1 = 10;
+		int num2 = 5;
+		
+		CompleteCalc calc = new CompleteCalc();
+		System.out.println(calc.add(num1, num2));
+		System.out.println(calc.subtract(num1, num2));
+		System.out.println(calc.times(num1, num2));
+		System.out.println(calc.divide(num1, num2));
+		System.out.println(calc.square(num1));
+		calc.showInfo();
+		
+		calc.description();	//디폴트 메서드 호출
+		
+		int[] arr = {1, 2, 3, 4, 5};
+		System.out.println(Calc.total(arr)); //정적 메서드 사용하기
+	}
+}
+-------------------------------------------------------------------------------
+15
+5
+50
+2
+100
+Calc 인터페이스를 구현하였습니다.
+정수 계산기를 구현합니다.
+15
+-------------------------------------------------------------------------------
+
+# private 메서드
+: 자바 9부터는 private 메서드를 구현할 수 있게 했다.
+> private 메서드는 인터페이스를 구현한 클래스에서 사용하거나 재정의할 수 없다.
+=> 기존 코드를 변경하지 않고 인터페이스를 구현한 클래스에서 공통으로 사용하는 경우에 사용한다!!!
+-------------------------------------------------------------------------------
+	default void description() {
+		System.out.println("정수 계산기를 구현합니다.");
+		myMethod(); //디폴트 메서드에서 private 메서드 호출
+	}
+	
+	//인터페이스에 정적 메서드 total()구현
+	static int total(int[] arr) {
+		int total = 0;
+		
+		for(int i : arr) {
+			total += i;
+		}
+		myStaticMethod();	//정적 메서드에서 private static 메서드 호출
+		return total;
+	}
+	
+	private void myMethod() {
+		System.out.println("private 메서드입니다.");
+	}
+	
+	private void myStaticMethod() {
+		System.out.println("private static 메서드입니다.");
+	}
+}
+-------------------------------------------------------------------------------
+
+
+10-4) 인터페이스 활용하기
+
+# 한 클래스가 여러 인터페이스를 구현하는 경우
+: 한 클래스가 여러 클래스를 상속받으면 메서드 호출이 모호해지는 문제가 발생할 수 있다.
+> 그러나, 인터페이스는 한 클래스가 여러 인터페이스를 구축할 수 있다.
+
+-------------------------------------------------------------------------------
+package interfaceex2;
+
+public interface Buy {
+	void buy();
+}
+-------------------------------------------------------------------------------
+package interfaceex2;
+
+public interface Sell {
+	void sell();
+}
+-------------------------------------------------------------------------------
+package interfaceex2;
+
+//Customer 클래스는 Buy와 Sell 인터페이스를 모두 구현한다.
+public class Customer implements Buy, Sell {
+	@Override
+	public void buy() {
+		System.out.println("구매하기");
+	}
+	
+	@Override
+	public void sell() {
+		System.out.println("판매하기");
+	}
+}
+-------------------------------------------------------------------------------
+: 인터페이스는 구현 코드나 맴버 변수를 가지지 않기 때문에 여러 개를 동시에 구현할 수 있다.
+> 두 인터페이스에 이름이 같은 메서드가 선언되었다고 해도 구현은 클래스에서 이루어지므로, 어떤 메서드를 호출해야
+  하는지 모호하지 않다.
+
+-------------------------------------------------------------------------------
+package interfaceex2;
+
+public class CustomerTest {
+	public static void main(String[] args) {
+		Customer customer = new Customer();
+		
+		//Customer 클래스형인 customer를 Buy 인터페애스형인 buyer에 대입하여 형 변환.
+		//buyer는 Buy 인터페이스의 메서드만 호출 가능
+		Buy buyer = customer;
+		buyer.buy();
+		
+		//Customer 클래스형인 customer를 Sell 인터페애스형인 seller에 대입하여 형 변환.
+		//seller는 Sell 인터페이스의 메서드만 호출 가능
+		Sell seller = customer;
+		seller.sell();
+		
+		//seller를 하위 클래스형인 Customer로 다시 형 변환
+		if(seller instanceof Customer) {
+			Customer customer2 = (Customer)seller;
+			customer2.buy();
+			customer2.sell();
+		}
+	}
+}
+-------------------------------------------------------------------------------
+
+# 인터페이스 상속하기
+: 인터페이스 간에도 상속이 가능하다.
+=> '형 상속(type inheritance)' : 구현 코드를 통해 기능을 상속하는 것
+> 인터페이스는 여러 개를 동시에 상속받을 수 있다.
+
+X interface
+-------------------------------------------------------------------------------
+package interfaceex3;
+
+public interface X {
+	void x();
+}
+-------------------------------------------------------------------------------
+
+Y interface
+-------------------------------------------------------------------------------
+package interfaceex3;
+
+public interface Y {
+	void y();
+}
+-------------------------------------------------------------------------------
+
+MyInterface interface
+-------------------------------------------------------------------------------
+package interfaceex3;
+
+//인터페이스 여러 개를 상속 받는 모습
+public interface MyInterface extends X, Y {
+	void myMethod();
+}
+-------------------------------------------------------------------------------
+
+MyClass class
+-------------------------------------------------------------------------------
+package interfaceex3;
+
+public class MyClass implements MyInterface	{
+	//X 인터페이스에서 상속받은 x() 메서드 구현
+	@Override
+	public void x() {
+		System.out.println("x()");
+	}
+
+	//Y 인터페이스에서 상속받은 y() 메서드 구현
+	@Override
+	public void y() {
+		System.out.println("y()");
+	}
+	
+	//MyInterface 인터페이스의 myMethod() 메서드 구현
+	@Override
+	public void myMethod() {
+		System.out.println("myMethod");
+	}
+}
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+package interfaceex3;
+
+public class MyClassTest {
+	public static void main(String[] args) {
+		MyClass mClass = new MyClass();
+		
+		X xClass = mClass;
+		xClass.x();
+		
+		Y yClass = mClass;
+		yClass.y();
+		
+		MyInterface iClass = mClass;
+		iClass.myMethod();
+		iClass.x();
+		iClass.y();
+	}
+}
+-------------------------------------------------------------------------------
+x()
+y()
+myMethod
+x()
+y()
+-------------------------------------------------------------------------------
+: 생성한 클래스는 상위 인터페이스형으로 변환할 수 있다.
+  단, 상위 인터페이스로 형 변환을 하면 인터페이스에 선언한 메서드만 호출 가능하다.
+=> 인터페이스를 정의할 경우, 기능상 계층 구조가 필요한 경우에 상속을 사용한다.
+
+
+# 인터페이스 구현과 클래스 상속 함께 쓰기
+: 한 클래스에서 클래스 상속과 인터페이스 구현을 모두 할 수 있다.
+
+Shelf 클래스 만들기(Shelf.java)
+-------------------------------------------------------------------------------
+package bookshelf;
+
+import java.util.ArrayList;
+
+public class Shelf {
+	//자료를 순서대로 저장할 ArrayList 선언
+	protected ArrayList<String> shelf;
+	
+	//디폴트 생성자로 Shelf 클래스를 생성하면 ArrayList도 생성된다.
+	public Shelf() {
+		shelf = new ArrayList<String>();
+	}
+	
+	public ArrayList<String> getShelf() {
+		return shelf;
+	}
+	
+	public int getCount() {
+		return shelf.size();
+	}
+}
+-------------------------------------------------------------------------------
+
+Queue 인터페이스 정의하기(Queue.java)
+-------------------------------------------------------------------------------
+package bookshelf;
+
+public interface Queue {
+	void enQueue(String title);	//배열의 맨 마지막에 추가
+	String deQueue();			//배열의 맨 처음 항목 반환(맨 앞에 있는 요소 제거 후, 그 값 반환)
+	int getSize();				//현재 Queue에 있는 개수 반환
+	}
+-------------------------------------------------------------------------------
+
+BookShelf 클래스 구현하기(BookShelf.java)
+-------------------------------------------------------------------------------
+package bookshelf;
+
+//BookShelf는 Shelf를 상속받고, Queue 인터페이스를 구현한다.
+public class BookShelf extends Shelf implements Queue {
+	//배열에 요소 추가
+	@Override
+	public void enQueue(String title) {
+		shelf.add(title);
+	}
+	
+	//맨 처음 요소를 배열에서 삭제하고 반환
+	@Override
+	public String deQueue() {
+		return shelf.remove(0);
+	}
+	
+	//배열 요소 개수 반환
+	@Override
+	public int getSize() {
+		return getCount();
+	}
+}
+-------------------------------------------------------------------------------
+
+BookShelf 클래스 구현하기(BookShelfTest.java)
+-------------------------------------------------------------------------------
+package bookshelf;
+
+public class BookShelfTest {
+	public static void main(String[] args) {
+		Queue shelfQueue = new BookShelf();
+		//순서대로 요소를 추가
+		shelfQueue.enQueue("태백산맥 1");
+		shelfQueue.enQueue("태백산맥 2");
+		shelfQueue.enQueue("태백산맥 3");
+		
+		//입력 순서대로 요소를 꺼내서 출력
+		System.out.println(shelfQueue.deQueue());
+		System.out.println(shelfQueue.deQueue());
+		System.out.println(shelfQueue.deQueue());
+	}
+
+}
+-------------------------------------------------------------------------------
+태백산맥 1
+태백산맥 2
+태백산맥 3
+-------------------------------------------------------------------------------
+: 입력한 순서대로 값이 출력되었다.
+
+
+# 실무에서 인터페이스를 사용하는 경우
+=> 인터페이스는 클래스가 제공할 기능을 선언하고 설계하는 것이다.
+Q) 만약에 여러 클래스가 같은 메서드를 서로 다르게 구현한다면?
+A) 우선 인터페이스에 메서드를 선언한 다음 인터페이스를 구현한 각 클래스에서 같은 메서드에 대해 다양한 기능을 구현한다.
+> 인터페이스를 이용한 다형성의 구현!!!
+
+=====================================================
+인터페이스를 잘 정의하는 것 : 확장성 있는 프로그램을 만든다는 의미이다.
+=====================================================
