@@ -1,0 +1,499 @@
+Java Programming
+
+11) 기본 클래스(1)
+: 이번 장에서 나오는 클래스는 JavaDoc을 찾아가며 활용하는 연습을 하면 된다.
+
+11-1) Object 클래스
+: 우리가 지금까지 사용해온 String, Integer 등의 패키지는 어디에서 왔을까?
+> java.lang 패키지에 속해 있다.
+- String 클래스의 전체 이름은 'java.lang.String' 이다.
+- Integer 클래스의 전체 이름은 'java.lang.Integer' 이다.
+=====================================================
+java.base\java\lang 폴더를 보면 java.lang 패키지에서 제공하는
+여러 소스를 확인할 수 있다.
+=====================================================
+: 외부 패키지에서 선언한 클래스를 사용할 경우에는 import문을 사용하여 가져와야 하나,
+  java.lang을 사용하면 자동으로 추가되어 java.lang 패키지의 하위 클래스를 모두 사용할 수 있다ㅏ.
+
+# 모든 클래스의 최상위 클래스 Object
+: 모든 클래스들은 Object에게 상속받는다.
+-------------------------------------------------------------------------------
+class Student {						class Student extends Object {
+	int studetnID;						int studentID;
+	String studentName;					String studentName;
+}									}
+-------------------------------------------------------------------------------
+: 우리가 직접 만든 클래스부터 기존 JDK에서 제공하는 클래스도 모두 Object 클래스에게 상속받는다.
+
+Object 메서드
+-------------------------------------------------------------------------------
+메서드						설명
+String toString()			객체를 문자열로 표현하여 반환한다. 재정의하여 객체에 대한 설명이나
+							특정 맴버 변수 값을 반환한다.
+boolean equals(Object obj)	두 인스턴스가 동일한지 여부를 반환한다. 재정의하여 논리적으로 동일한
+							인스턴스임을 정의할 수 있다.
+int hashCode()				객체의 해시 코드 값을 반환한다.
+Object clone()				객체를 복제히여 동일한 맴버 변수 값을 가진 새로운 인스턴스를 생성한다.
+Class getClass()			객체의 Class 클래스를 반환한다.
+void finalize()				인스턴스가 힙 메모리에서 제거될 때, 가비지 컬렉터(GC)에 의해 호출되는
+							메서드이다. 네트워크 연결 해제, 열려 있는 파일 스트림 해제 등을 구현
+void wait()					멀티스레드 프로그램에서 사용하는 메서드로 스레드를 '기다리는 상태(non runnable)'
+							로 만든다.
+void notify()				wait() 메서드에 의해 기다리고 있는 스레드(non runnable 상태)를 실행
+							가능한 상태(runnable)로 가져온다.
+-------------------------------------------------------------------------------
+: 모든 Object 메서드를 재정의할 수는 없다.
+
+# toString() 메서드
+: toString() 메서드 : 이름처럼 객체 정보를 문자열(String)로 바꿔준다.
+				  : toString()을 재정의할 수 있다.
+
+= Object 클래스의 toString() 메서드
+: toString() 메서드는 인스턴스 정보를 문자열로 반환하는 메서드이다.
+: toString()의 원형은 생서된 인스턴스의 클래스 이름과 주소 값을 보여준다.
+
+Object 클래스의 toString() 메서드 사용하기(ToStringEx.java)
+-------------------------------------------------------------------------------
+package object;
+
+class Book {
+	int bookNumber;
+	String bookTitle;
+
+//책 번호와 제목을 매개변수로 입력받는 생성자
+Book(int bookNumber, String bookTitle) {
+	this.bookNumber = bookNumber;
+	this.bookTitle = bookTitle;
+	}
+}
+
+public class ToStringEx {
+	public static void main(String[] args) {
+		Book book1 = new Book(200, "개미");
+		
+		System.out.println(book1);				//인스턴스 정보(클래스 이름, 주소 값)
+		System.out.println(book1.toString());	//toString() 메서드로 인스턴스 정보(클래스 이름, 주소 값)를 보여줌.
+	}
+}
+-------------------------------------------------------------------------------
+object.Book@73f792cf
+object.Book@73f792cf
+-------------------------------------------------------------------------------
+> Object 클래스의 toString() 메서드의 원형은
+: getClass().getName() + '@' + Integer.toHexString(hashCode())
+=> '클래스 이름 @ 해시 코드 값'
+
+# String과 Integer 클래스의 toString() 메서드
+: '클래스 이름 @ 해시 코드 값'이 아닌 경우도 있다.
+=====================================================
+String str = new String("test");
+System.out.println(str);			//test가 출력됨.
+Integer i1 = new Integer(100);
+System.out.println(i1);				//100이 출력됨.
+=====================================================
+> String과 Integer는 toString() 메서드를 미리 재정의해 놓았다.
+  그렇기에 재정의된 메서드가 호출된다.
+  
+= Book 클래스에서 toString() 메서드 직접 재정의하기
+
+toString() 메서드 재정의하기 (ToStringEx.java)
+-------------------------------------------------------------------------------
+package object;
+
+class Book {
+	int bookNumber;
+	String bookTitle;
+
+//책 번호와 제목을 매개변수로 입력받는 생성자
+Book(int bookNumber, String bookTitle) {
+	this.bookNumber = bookNumber;
+	this.bookTitle = bookTitle;
+	}
+
+@Override
+public String toString() {
+	return bookTitle + ", " + bookNumber;
+}
+
+
+}
+
+public class ToStringEx {
+	public static void main(String[] args) {
+		Book book1 = new Book(200, "개미");
+		
+		System.out.println(book1);				//인스턴스 정보(클래스 이름, 주소 값)
+		System.out.println(book1.toString());	//toString() 메서드로 인스턴스 정보(클래스 이름, 주소 값)를 보여줌.
+	}
+}
+-------------------------------------------------------------------------------
+개미, 200
+개미, 200
+-------------------------------------------------------------------------------
+
+
+# equals() 메서드
+: equals() : 원래 기능은 두 인스턴스의 주소 값을 비교하여 boolean 값(true/false)을 반환해주는 것
+		   > 주소 값이 동일하면 같은 인스턴스
+		   > 서로 다른 주소 값일 경우, 같은 인스턴스라고 정의할 수 있다.
+=> 물리적 동일성(인스턴스의 메모리 주소가 같음)과 논리적 동일성(논리적으로 두 인스턴스가 같음)을 구현할 때 사용
+
+= Object 클래스의 equals() 메서드
+: 두 변수가 같은 메모리 주소를 같는다.
+-------------------------------------------------------------------------------
+Student studentLee = new Student(100, "이상원");
+Student studentLee2 = studentLee;	//주소 복사
+-------------------------------------------------------------------------------
+> 이럴 경우에 동일한 인스턴스를 같는다.
+
+-------------------------------------------------------------------------------
+Student studentLee = new Student(100, "이상원");
+Student studentLee2 = studentLee;
+Student studentSang = new Student(100, "이상원");
+-------------------------------------------------------------------------------
+> studentLee와 studentLee2가 가리키는 주소값과 studentSang이 가지는 주소 값이 다르고 저장된
+  학생 정보는 동일하다.
+  => 논리적으로는 동일하다고 처리할 것이다.
+  
+Object 클래스의 equals()메서드 사용하기
+-------------------------------------------------------------------------------  
+package object;
+
+class Student {
+	int studentId;
+	String studentName;
+
+public Student(int studentId, String studentName) {
+	this.studentId = studentId;
+	this.studentName = studentName;
+	}
+
+public String toString() {
+	return studentId + ", " + studentName;
+	}
+}
+
+public class EqualsTest {
+	public static void main(String[] args) {
+		Student studentLee = new Student(100, "이상원");
+		Student studentLee2 = studentLee;	//주소 복사
+		Student studentSang = new Student(100, "이상원");
+		
+		//동일한 주소의 두 인스턴스 비교
+		if(studentLee == studentLee2) //== 기호로 비교
+			System.out.println("studentLee와 studentLee2의 주소는 같습니다.");
+		else
+			System.out.println("studentLee와 studentLee2의 주소는 다릅니다.");
+		
+		if(studentLee.equals(studentLee2))	//equals() 메서드로 비교
+			System.out.println("studentLee와 studentLee2는 동일합니다.");
+		else
+			System.out.println("studentLee와 studentLee2는 동일하지 않습니다.");
+		
+		//동일인이지만 인스턴스의 주소가 다른 경우
+		if(studentLee == studentSang) //== 기호로 비교
+			System.out.println("studentLee와 studentSang의 주소는 같습니다.");
+		else
+			System.out.println("studentLee와 studentSang의 주소는 다릅니다.");
+		
+		if(studentLee.equals(studentSang)) //equals() 메서드로 비교
+			System.out.println("studentLee와 studentSang는 동일합니다.");
+		else
+			System.out.println("studentLee와 studentSang는 동일하지 않습니다.");
+	}
+}
+-------------------------------------------------------------------------------
+studentLee와 studentLee2의 주소는 같습니다.
+studentLee와 studentLee2는 동일합니다.
+studentLee와 studentSang의 주소는 다릅니다.
+studentLee와 studentSang는 동일하지 않습니다.
+-------------------------------------------------------------------------------
+: 인스턴스의 주소가 달라도 동일한 객체임을 확인할 수 있어야 한다.
+'=='는 단순히 물리적으로 같은 메모리 주소인지 여부를 확인할 수 있다.
+'equals'는 재정의하여 논리적으로 같은 인스턴스인지(메모리 주소가 다르더라도 같은 학생인지) 확인하도록 구현할 수 있다.
+
+
+= String과 Integer 클래스의 equals() 메서드
+-------------------------------------------------------------------------------
+package object;
+
+public class StringEquals {
+	public static void main(String[] args) {
+		String str1 = new String("abc");
+		String str2 = new String("abc");
+		
+		// 두 인스턴스 주소 값이 같은지 비교하여 출력
+		System.out.println(str1 == str2);
+		/* String 클래스의 equals() 메서드 사용.
+		 * 두 인스턴스의 문자열 값이 같은지 비교하여 출력*/
+		System.out.println(str1.equals(str2));
+		
+		Integer i1 = new Integer(100);
+		Integer i2 = new Integer(100);
+		
+		//두 인스턴스 주소 값이 같은지 비교하여 출력
+		System.out.println(i1 == i2);
+		/* Integer 클래스의 equals() 메서드 사용.
+		 * 인스턴스의 정수 값이 같은지 비교하여 출력 */
+		System.out.println(i1.equals(i2));
+	}
+}
+-------------------------------------------------------------------------------
+false
+true
+false
+true
+-------------------------------------------------------------------------------
+
+
+= Student 클래스에서 equals() 메서드 직접 재정의하기
+
+equals() 메서드 재정의하기(EqualsTest.java)
+-------------------------------------------------------------------------------
+package object;
+
+class Student {
+	int studentId;
+	String studentName;
+
+public Student(int studentId, String studentName) {
+	this.studentId = studentId;
+	this.studentName = studentName;
+	}
+
+public String toString() {
+	return studentId + ", " + studentName;
+	}
+
+//equals 메서드 재정의
+@Override
+public boolean equals(Object obj) {
+	if(obj instanceof Student) {
+		Student std = (Student)obj;
+	if(this.studentId == std.studentId)	//재정의한 equals() 메서드는 학생의
+		return true;					//학번이 같으면 true 반환
+	else return false;
+	}
+	return false;
+}
+
+}
+
+public class EqualsTest {
+	public static void main(String[] args) {
+		Student studentLee = new Student(100, "이상원");
+		Student studentLee2 = studentLee;	//주소 복사
+		Student studentSang = new Student(100, "이상원");
+		
+		//동일한 주소의 두 인스턴스 비교
+		if(studentLee == studentLee2) //== 기호로 비교
+			System.out.println("studentLee와 studentLee2의 주소는 같습니다.");
+		else
+			System.out.println("studentLee와 studentLee2의 주소는 다릅니다.");
+		
+		if(studentLee.equals(studentLee2))	//equals() 메서드로 비교
+			System.out.println("studentLee와 studentLee2는 동일합니다.");
+		else
+			System.out.println("studentLee와 studentLee2는 동일하지 않습니다.");
+		
+		//동일인이지만 인스턴스의 주소가 다른 경우
+		if(studentLee == studentSang) //== 기호로 비교
+			System.out.println("studentLee와 studentSang의 주소는 같습니다.");
+		else
+			System.out.println("studentLee와 studentSang의 주소는 다릅니다.");
+		
+		if(studentLee.equals(studentSang)) //equals() 메서드로 비교
+			System.out.println("studentLee와 studentSang는 동일합니다.");
+		else
+			System.out.println("studentLee와 studentSang는 동일하지 않습니다.");
+	}
+}
+-------------------------------------------------------------------------------
+
+
+# hashCode() 메서드
+: 해시(hash) : 정보를 저장하거나 검색할 때 사용하는 자료 구조
+: 해시 함수 : 객체의 특정 정보를 매개변수 값으로 넣으면 그 객체가 저장되어야 할 위치나 저장된 해시 테이블 주소를 반환한다.
+=====================================================
+저장 위치	  해시함수 객체 정보
+index   =  hash(key)
+=====================================================
+> Object 클래스의 toString() 메서드 원형
+: getClass().getName() + '@' + Integer.toHexString(hashCode())이다.
+
+= String과 Integer 클래스의 hashCode() 메서드
+: String 클래스와Integer 클래스의 equals() 메서드는 재정의되었다.
+
+String과 Integer 클래스의 hashCode() 메서드(HashCodeTest.java)
+-------------------------------------------------------------------------------
+package object;
+
+public class HashCodeTest {
+	public static void main(String[] args) {
+		String str1 = new String("abc");
+		String str2 = new String("abc");
+		
+		//abc 문자열의 해시 코드 값 출력
+		System.out.println(str1.hashCode());
+		System.out.println(str2.hashCode());
+		
+		Integer i1 = new Integer(100);
+		Integer i2 = new Integer(100);
+		
+		//Integer(100)의 해시 코드 값 출력
+		System.out.println(i1.hashCode());
+		System.out.println(i2.hashCode());
+	}
+}
+-------------------------------------------------------------------------------
+96354
+96354
+100
+100
+-------------------------------------------------------------------------------
+
+= Student 클래스에서 hashCode() 메서드 재정의하기
+: Student 클래스에 hashCode()를 재정의하여 추가한다.
+
+------------------------------------------------------------------------------- 
+package object;
+
+class Student {
+	int studentId;
+	String studentName;
+
+public Student(int studentId, String studentName) {
+	this.studentId = studentId;
+	this.studentName = studentName;
+	}
+
+public String toString() {
+	return studentId + ", " + studentName;
+	}
+
+//equals 메서드 재정의
+@Override
+public boolean equals(Object obj) {
+	if(obj instanceof Student) {
+		Student std = (Student)obj;
+	if(this.studentId == std.studentId)	//재정의한 equals() 메서드는 학생의
+		return true;					//학번이 같으면 true 반환
+	else return false;
+	}
+	return false;
+	}
+
+@Override
+public int hashCode() {
+	return studentId;
+	}
+}
+
+public class EqualsTest {
+	public static void main(String[] args) {
+		Student studentLee = new Student(100, "이상원");
+		Student studentLee2 = studentLee;	//주소 복사
+		Student studentSang = new Student(100, "이상원");
+		
+		//동일한 주소의 두 인스턴스 비교
+		if(studentLee == studentLee2) //== 기호로 비교
+			System.out.println("studentLee와 studentLee2의 주소는 같습니다.");
+		else
+			System.out.println("studentLee와 studentLee2의 주소는 다릅니다.");
+		
+		if(studentLee.equals(studentLee2))	//equals() 메서드로 비교
+			System.out.println("studentLee와 studentLee2는 동일합니다.");
+		else
+			System.out.println("studentLee와 studentLee2는 동일하지 않습니다.");
+		
+		//동일인이지만 인스턴스의 주소가 다른 경우
+		if(studentLee == studentSang) //== 기호로 비교
+			System.out.println("studentLee와 studentSang의 주소는 같습니다.");
+		else
+			System.out.println("studentLee와 studentSang의 주소는 다릅니다.");
+		
+		if(studentLee.equals(studentSang)) //equals() 메서드로 비교
+			System.out.println("studentLee와 studentSang는 동일합니다.");
+		else
+			System.out.println("studentLee와 studentSang는 동일하지 않습니다.");
+		
+		System.out.println("studentLee의 hashCode : " + studentLee.hashCode());
+		System.out.println("stduentSang의 hashCode : " + studentSang.hashCode());
+		
+		System.out.println("studentLee의 실제 주소값 : " + System.identityHashCode(studentLee));
+		System.out.println("studentSang의 실제 주소값 : " + System.identityHashCode(studentSang));
+	}
+}
+-------------------------------------------------------------------------------
+studentLee와 studentLee2의 주소는 같습니다.
+studentLee와 studentLee2는 동일합니다.
+studentLee와 studentSang의 주소는 다릅니다.
+studentLee와 studentSang는 동일합니다.
+studentLee의 hashCode : 100		//두 학생은 논리적으로 같기 때문에 같은 해시 코드 값을 반환
+stduentSang의 hashCode : 100
+studentLee의 실제 주소값 : 1945604815
+studentSang의 실제 주소값 : 785992331
+-------------------------------------------------------------------------------
+
+
+# clone() 메서드
+: 객체 원본을 유지해 놓고 복사본을 사용한다거나, 기본 들(prototype)의 복사본을 사용해 동일한
+  인스턴스를 만들어 복잡한 생성 과정을 간단히 하려는 경우에 clone() 메서드를 사용
+=====================================================
+protected Object clone();
+=====================================================
+
+clone()메서드로 인스턴스 복제하기 (ObjectCloneTest.java)
+-------------------------------------------------------------------------------
+package object;
+
+class Point {
+	int x;
+	int y;
+	
+Point(int x, int y) {
+	this.x = x;
+	this.y = y;
+}
+
+public String toString() {
+	return "x= " + x + ", " + "y= " + y;
+	}
+}
+
+class Circle implements Cloneable {
+	Point point;
+	int radius;
+	
+	Circle(int x, int y, int radius) {
+		this.radius = radius;
+		point = new Point(x, y);
+	}
+	
+	public String toString() {
+		return "원점은 " + point + "이고, " + "반지름은 " + radius + "입니다.";
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+}
+
+public class ObjectCloneTest {
+	public static void main(String[] args) throws CloneNotSupportedException {
+		Circle circle = new Circle(10, 20, 30);
+		Circle copyCircle = (Circle)circle.clone();
+		
+		System.out.println(circle);
+		System.out.println(copyCircle);
+		System.out.println(System.identityHashCode(circle));
+		System.out.println(System.identityHashCode(copyCircle));
+	}
+}
+-------------------------------------------------------------------------------
+원점은 x= 10, y= 20이고, 반지름은 30입니다.
+원점은 x= 10, y= 20이고, 반지름은 30입니다.
+785992331
+940060004
+-------------------------------------------------------------------------------
