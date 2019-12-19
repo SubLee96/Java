@@ -1,0 +1,205 @@
+Java Programming
+
+11) 기본 클래스(2)
+
+11-1) String 클래스
+: String 클래스를 선언하는 두 가지 방법
+> 문자열은 프로그램을 구현할 때 많이 사용한다.
+1. 문자열을 생성자의 매개변수로 하여 생성하는 방식
+2. 이미 생성된 문자열 상수를 가리키는 방식
+=====================================================
+String str1 = new String("abc");	//생성자의 매개변수로 문자열 생성
+String str2 = "test";				//문자열 상수를 가리키는 방식
+=====================================================
+: 1번 방법은 new예약어를 사용하여 객체를 생성하기에 "abc"를 위한 메모리가 할당되고
+  새로운 객체가 생성된다.
+: 2번 방법은 생성자를 이용하지 않고 바로 문자열 상수를 가리켜서 "test"라는 문자열 상수의
+  메모리 주소를 가리키게 된다.
+  즉, String str3 = "test"; 코드를 작성하면 str2와 str3 주소 값이 동일하게 된다.
+  
+: 상수 풀(constant pool) : 프로그램에서 사용되는 상수 값을 저장하는 공간
+
+주소 값 비교하기(StrintTest1.java)
+-------------------------------------------------------------------------------
+package object;
+
+public class StringTest1 {
+	public static void main(String[] args) {
+		String str1 = new String("abc");	
+		String str2 = new String("abc");	
+		
+		System.out.println(str1 == str2); //인스턴스가 매번 새로 생성되므로 str1과 str2의 주소 값이 다름
+		System.out.println(str1.equals(str2)); //문자열 값은 같으므로 true 반환
+		
+		String str3 = "abc";
+		String str4 = "abc";
+		
+		System.out.println(str3 == str4); //문자열 abc는 상수 풀에 저장되어 있으므로 str3와 str4가 가리키는 주소 값이 같음
+		System.out.println(str3.equals(str4)); //문자열 값ㄷ ㅗ같으므로 true 반환
+	}
+}
+-------------------------------------------------------------------------------
+false
+true
+true
+true
+-------------------------------------------------------------------------------
+
+# String 클래스의 final char[] 변수
+: 다른 프로그래밍 언어는 문자열을 구현할 때 일반적으로 char[] 배열을 사용한다.
+> Java는 String 클래스를 제공해서 char[]을 구현하지 않아도 된다.
+=> final로 선언한 String 클래스는 변경할 수 없다. : '문자열은 불변(immutable)한다'
+
+두 문자열 연결하기 (StringTest2.java)
+-------------------------------------------------------------------------------
+package object;
+
+public class StringTest2 {
+
+	public static void main(String[] args) {
+		String javaStr = new String("java");
+		String androidStr = new String("android");
+		System.out.println(javaStr);
+		System.out.println("처음 문자열 주소 값: " + System.identityHashCode(javaStr));
+		
+		javaStr = javaStr.concat(androidStr); //문자열 javaStr와 문자열 androidStr를 연결하여 javaStr에 대입
+		
+		System.out.println(javaStr);
+		System.out.println("연결된 문자열 주소 값 : " + System.identityHashCode(javaStr));
+	}
+}
+-------------------------------------------------------------------------------
+java
+처음 문자열 주소 값: 127618319
+javaandroid
+연결된 문자열 주소 값 : 1798286609
+-------------------------------------------------------------------------------
+: concat()메서드로 두 문자열을 합친다.
+> 문자열이 연결된 것처럼 보이지만, 문자열은 불변(immutable)하므로 javaStr 변수 값 자체가 변한 것이
+  아니라 "새로운 문자열이 생성된 것이다."
+=> 주소값이 달라졌다.
+
+
+# StringBuffer와 StringBuilder 클래스 활용하기
+: 프로그램을 만드는 과정에서 문자열을 변경하거나 연결해야 하는 경우가 많이 생긴다.
+> String 클래스는 한번 생성되면 그 내부의 문자열이 변경되지 않기 때문에 String 클래스를 사용하여
+  문자열을 계속 연결하거나 변경하는 프로그램을 작성하면 메모리가 많이 낭비된다.
+  => StringBuffer와 StringBuilder가 있다.
+	: 기존에 사용하던 char[] 배열이 솩장되므로 추가 메모리를 사용하지 않는다.
+	> 둘의 차이는 여러 작업(스레드)이 동시에 문자열을 변경하려 할때, 문자열이 안전라게 변경되도록
+	  보장해주는가 그렇지 않은가 차이이다.
+	  StringBuffer 클래스는 문자열이 안전하게 변경되도록 보장/ StringBuilder는 그렇지 않다.(멀티스레스가 아니면 실행 속도가 빠르다.)
+
+StringBuilder 클래스 예제(StringBuilderTest.java)
+-------------------------------------------------------------------------------
+package object;
+
+public class StringBuilderTest {
+
+	public static void main(String[] args) {
+		String javaStr = new String("Java");
+		System.out.println("javaStr 문자열 주소 : " + System.identityHashCode(javaStr));
+												//인스턴스가 처음 생성됐을 때 메모리 주소
+		StringBuilder buffer = new StringBuilder(javaStr);	//String으로부터 StringBuilder 생성
+		System.out.println("연산 전 buffer 메모리 주소 : " + System.identityHashCode(buffer));
+		
+		//문자열 추가
+		buffer.append(" and");
+		buffer.append(" android");
+		buffer.append(" programming is fun!!");
+		System.out.println("연산 후 buffer 메모리 주소 : " + System.identityHashCode(buffer));
+		
+		javaStr = buffer.toString(); //String 클래스로 반환
+		System.out.println(javaStr);
+		System.out.println("연결된 javaStr 문자열 주소 : "+ System.identityHashCode(javaStr));
+	}
+
+}
+-------------------------------------------------------------------------------
+javaStr 문자열 주소 : 127618319
+연산 전 buffer 메모리 주소 : 1798286609
+연산 후 buffer 메모리 주소 : 1798286609
+Java and android programming is fun!!
+연결된 javaStr 문자열 주소 : 2036958521
+-------------------------------------------------------------------------------
+: append() 메서드는 메모리가 새로 생성되는 것이 아니라, 하나의 메모리에 계속 연결되는 것을 해시 코드 값을 통해 알 수 있다.
+
+
+11-3) Wrapper 클래스
+
+# 기본 자료형을 위한 클래스
+: 정수를 객체형으로 사용해야 하는 경우가 있다.
+public void setValue(Integer i) {...} //객체를 매개변수로 받는 경우
+public Integer returnValue() {...}	  //반환 값이 객체형인 경우
+
+============================
+기본형	 Wrapper 클래스
+boolean	 Boolean
+byte	 Byte
+char	 Character
+short	 Short
+int		 Integer
+long	 Long
+float	 Float
+double	 Double
+============================
+: 클래스 사용 방법은 다르지 않다.
+
+# Integer 클래스 사용하기
+-------------------------------------------------------------------------------
+Integer(int value) {...} //특정 정수를 매개변수로 받는 경우
+Integer(String s) {...}  //특정 문자열을 매개변수로 받는 경우
+-------------------------------------------------------------------------------
+
+= Integer 클래스의 메서드
+-------------------------------------------------------------------------------
+Integer iValue = new Integer(100);
+int myValue = iValue.intValue();	//int 값 가져오기. myValue 값을 출력하면 100이 출력됨.
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+Integer number1 = Integer.valueOf("100");
+Integer number2 = Integer.valueOf(100);
+int num = Integer.parseInt("100");
+-------------------------------------------------------------------------------
+
+# 오토박싱과 언박싱
+: int 기본 자료형 : 4바이트
+: Integer 클래스 : 인스턴스로 생성하려면 생성자를 호출하고 정수 값을 인수로 넣어야 한다.
+> 쓰임과 특성이 다르다.
+-------------------------------------------------------------------------------
+Integer num1 = new Integer(100);
+int num2 = 200;
+int sum = num + num2;	//num.intValue()로 변환(언박싱)
+Integer num3 = num2;	//Integer.valueOf(num2)로 변환(오토박싱)
+-------------------------------------------------------------------------------
+: 오토박싱(autoboxing) : 기본형을 객체형으로 바꾸는 것
+: 언박싱(unboxing) : 객체형을 기본형으로 꺼내는 것
+> 커뮤ㅏ일러가 변경하는 것이다.
+
+
+11-4) Class 클래스
+: 자바의 모든 클래스와 인터페이스는 컴파일되고 나면 class 파일로 생성된다.
+> Class 클래스는 컴파일된 class 파일에 저장된 클래스나 인터페이스 정보를 가져오는데 사용한다.
+
+# Class 클래스란?
+: 어떤 경우에는 여러 클래스 중에 상황에 따라 다른 클래스를 사용해야 할때도 있고, 반환받는 클래스가
+  정확히 어떤 자료형인지 모를 때도 있다.
+=> 모르는 클래스의 정보를 사용할 경우에 우리가 클래스 정보를 직접 찾아야 한다. : "Class 클래스" 활용!!!
+
+= Class 클래스를 선언하고 클래스 정볼르 가져오는 방법은 세 가지가 있다.
+-------------------------------------------------------------------------------
+1. Object 클래스의 getClass() 메서드 사용하기
+ String s = new String();
+ Class c = s.getClass();	//getClass() 메서드의 반환형은 Class
+-------------------------------------------------------------------------------
+: Object에 선언한 getClass() 메서드는 모든 클래스는 모든 클래스가 사용할 수 있는 메서드이다.
+-------------------------------------------------------------------------------
+2. 클래스 파일 이름을 Class 변수에 직접 대입하기
+ Class c = String.Class;
+-------------------------------------------------------------------------------
+3. Class.forName("클래스 이름") 메서드 사용하기
+ Class c = Class.forName("java.lang.String");
+-------------------------------------------------------------------------------
+: 2, 3번은 컴파일된 클래스 파일이 있다면 클래스 이름만으로 Class 클래스를 반환받는다.
+
