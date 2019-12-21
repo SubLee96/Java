@@ -1,0 +1,127 @@
+Java Programming
+
+12) 컬렉션 프레임 워크(1)
+
+12-1) 제네릭
+: '제네릭 프로그램이(Generic)' : 하나의 참조 자료형이 아닌 여러 참조 자료형을 사용할 수 있는 프로그램
+
+# 제네릭의 필요성
+: 동일한 재료로 한 개의 기계를 사용한다면 매우 비효율적일 것이다.
+예) 3D 프린터를 사용하면서 파우더나 플라스틱 액체를 사용한다고 가정하면 재료만 바뀌었을 뿐, 프린터 기능이 동일하다면
+   클래스를 굳이 두 개씩이나 만드는 행위는 비효율적이다.
+-> 이런 경우에 material 변수의 자료형을 Object로 사용하여 어떤 재료든 쓸 수 있도록 바꿀 수 있다.
+
+=> 특정한 자료형을 지정하지 않고, 클래스나 메서드를 정의한 후 사용하는 시점에 어떤 자료형을 사용할 것인지 지정하는
+   방식이다. 
+   
+# 제네릭 클래스 정의하기
+: 여러 자료형으로 바꾸어 사용할 material 변수의 자료형을 T라고 쓴다.
+> T를 '자료형 매개변수(type material)'이라 부른다. 클래스 이름을 GenericPrinter<T>라고 정의하고
+  나중에 클래스를 사용할 때 T 위치에 실제 사용할 자료형을 지정한다.
+  -> 클래스의 각 메서드에서 해당 자료형이 필요한 부분에는 모두 T문자를 사용하여 구현한다.
+
+= 다이아몬드 연산자<>
+===============================================
+ArrayList<String> list = new ArrayList< >( ); 
+===============================================
+: 자바 7부터 제네릭 자료형의 클래스를 생성할 때, 생성자에 사용하는 자료형을 명시하지 않을 수 있다.
+-> < > 에서 생략된 부분은 String이다.
+
+= 자료형 매개변수 T와 static
+: T의 자료형이 결정되는 시점보다 빠르기 때문에 static 변수의 자료형이나 static 메서드 내부 변수의 자료형을
+  T를 사용할 수 없다.
+  
+= 제네릭에서 자료형 추론하기
+: 자바 10부터는 지역변수에 한해서 자료형을 추론할 수 있다.(제네릭에도 적용!!!)
+==============================================================================================
+ArrayList<String> list = new ArrayList<String>(); => var list = new ArrayList<String>();
+==============================================================================================
+
+# 제네릭 클래스 사용하기
+-------------------------------------------------------------------------------
+GenericPrinter<Powder> powderPrinter = new GenericPrinter<Powder>();
+powderPrinter.setMaterial(new Powder());
+Powder powder = powderPrinter.getMaterial();	//명시적 형변환을 하지 않았음.
+-------------------------------------------------------------------------------
+T위치에 사용한 Powder형을 '대입된 자료형'이라 하고
+Powder를 대입해 만든 GenericPrinter<Powder>를 '제네릭 자료형'이라 한다.
+
+= 제네릭 클래스 사용 예제
+
+Powder 클래스 정의하기 (Powder.java)
+-------------------------------------------------------------------------------
+package generics;
+
+public class Powder {
+	public void doPrinting() {
+		System.out.println("Powder 재료로 출력합니다.");
+	}
+	
+	public String toString() {
+		return "재료는 Powder입니다.";
+	}
+}
+-------------------------------------------------------------------------------
+
+Plastic 클래스 정의하기 (Plastic.java)
+-------------------------------------------------------------------------------
+package generics;
+
+public class Plastic {
+	public void doPrinting() {
+		System.out.println("Plastic 자료로 출력합니다.");
+	}
+	
+	public String toString() {
+		return "재료는 Plastic입니다.";
+	}
+}
+-------------------------------------------------------------------------------
+
+GenericPrinter<T> 클래스 정의하기 (GenericPrinter.java)
+-------------------------------------------------------------------------------
+package generics;
+
+public class GenericPrinter<T> {
+	private T material;	//T 잘형으로 선언한 변수
+	
+	public void setMaterial(T material) {
+		this.material = material;
+	}
+	
+	//T 자료형 변수 material을 반환하는 제네릭 메서드
+	public T getMaterial() {
+		return material;
+	}
+	
+	public String toString() {
+		return material.toString();
+	}
+}
+-------------------------------------------------------------------------------
+: getMaterial() 메서드는 T자료형 변수 material을 반환한다.
+=> '제네릭 메서드(Generic Method)' : 메서드 선언부나 메서드의 매개변수로 자료형 매개변수 T를 사용한 메서드
+
+GenericPrinter<T> 클래스 사용하기 (GenericPrinterTest.java)
+-------------------------------------------------------------------------------
+package generics;
+
+public class GenericPrinterTest {
+	public static void main(String[] args) {
+		GenericPrinter<Powder> powderPrinter = new GenericPrinter<Powder>();
+		
+		powderPrinter.setMaterial(new Powder());
+		Powder powder = powderPrinter.getMaterial();
+		System.out.println(powderPrinter);
+		
+		GenericPrinter<Plastic> plasticPrinter = new GenericPrinter<Plastic>();
+		
+		plasticPrinter.setMaterial(new Plastic());
+		Plastic plastic = plasticPrinter.getMaterial();
+		System.out.println(plasticPrinter);
+	}
+}
+-------------------------------------------------------------------------------
+재료는 Powder입니다.
+재료는 Plastic입니다.
+-------------------------------------------------------------------------------
